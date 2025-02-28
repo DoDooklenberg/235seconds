@@ -3,7 +3,7 @@
 int main() {
     unsigned int width = 640;
     unsigned int height = 360;
-    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width, height }), "240seconds");
+    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width, height }), "235seconds");
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
             if (event->is<sf:: Event::Closed>()) {
