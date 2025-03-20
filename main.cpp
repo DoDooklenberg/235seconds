@@ -17,16 +17,6 @@ void game(int time, int modules[6]) {
     infoText.render(window);
     window->display();
 
-    for (int i = 0; i >= 0; i++){
-        i++;
-    }
-    for (int i = 0; i >= 0; i++){
-        i++;
-    }
-    for (int i = 0; i >= 0; i++){
-        i++;
-    }
-
     Label display(font, "00:00", sf::Color::White, 50);
     display.setPositionCenter({ width * 0.1f, height * 0.05f });
 
@@ -77,6 +67,12 @@ void game(int time, int modules[6]) {
         while (const std::optional event = window->pollEvent()) {
             if (event->is<sf:: Event::Closed>()) {
                 window->close();
+            } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->scancode == sf::Keyboard::Scan::Escape)
+                {
+                    window->close();
+                }
             }
         }
         window->clear(sf::Color::Black);
