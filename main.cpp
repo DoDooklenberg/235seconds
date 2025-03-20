@@ -2,13 +2,45 @@
 #include "label.h"
 #include <string>
 
+const sf::Font font("font.ttf");
+
+void win(int time) {
+    unsigned int width = 1280;
+    unsigned int height = 720;
+    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width, height }), "Winning window",sf::Style::None);
+    window->setFramerateLimit(60);
+    sf::sleep(sf::milliseconds(200));
+
+    Label message(font, "Вы выжили!", sf::Color::White, 100);
+    message.setPositionCenter({width * 0.5f, height * 0.5f});
+
+    while (window->isOpen()) {
+        while (const std::optional event = window->pollEvent()) {
+            if (event->is<sf:: Event::Closed>()) {
+                window->close();
+            }  else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->scancode == sf::Keyboard::Scan::Escape)
+                {
+                    window->close();
+                }
+            }
+        }
+        window->clear(sf::Color::Black);
+
+        message.render(window);
+
+        window->display();
+    }
+    window->close();
+    delete window;
+};
+
 void game(int time, int modules[6]) {
     sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setVerticalSyncEnabled(true);
     float width = window->getSize().x;
     float height = window->getSize().y;
-
-    sf::Font font("font.ttf");
 
     Label infoText(font, "Загрузка...", sf::Color::White, 80);
     infoText.setPositionCenter({ width * 0.5f, height * 0.5f });
@@ -126,12 +158,14 @@ int main() { // Это стартовое меню. Пока оно просто
         }
         window->clear(sf::Color::White);
 
+        window->close();
+
         window->display();
     }
     window->close();
     delete window;
 
-    startGame();
+    win(10);
 
     return 0;
 }
