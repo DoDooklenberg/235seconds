@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
-#include "label.h"
 #include <string>
+#include "label.h"
+#include "basemodule.h"
 
 const sf::Font font("font.ttf");
 
@@ -36,24 +37,21 @@ void win(int time) {
     delete window;
 };
 
-void game(int time, int modules[6]) {
+void game(int time, int moduleUIDs[6]) {
     sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setVerticalSyncEnabled(true);
+    window->setKeyRepeatEnabled(false);
     float width = window->getSize().x;
     float height = window->getSize().y;
 
     Label infoText(font, "Загрузка...", sf::Color::White, 80);
     infoText.setPositionCenter({ width * 0.5f, height * 0.5f });
-
     window->clear(sf::Color::Black);
     infoText.render(window);
     window->display();
 
     Label display(font, "00:00", sf::Color::White, 50);
     display.setPositionCenter({ width * 0.1f, height * 0.05f });
-
-    sf::Clock timer;
-    timer.stop();
     std::string minutes, seconds;
     if (time % 60 < 10) {
         seconds = "0" + std::to_string(time % 60);
@@ -67,33 +65,40 @@ void game(int time, int modules[6]) {
     }
     display.setString(minutes + ":" + seconds);
 
+    sf::Clock timer;
+    timer.stop();
+
+    unsigned int moduleSide;
+    BaseModule* modules[6];
+    for (short i = 0; i < 6; i++) {
+        if (moduleUIDs[i]) {
+            // TODO Добавить нужные модули
+        } else {
+            modules[i] = new BaseModule({i*150.f, i*150.f}, {(i + 1)*150.f, (i + 1)*150.f}, 10);
+        }
+    }
+
     infoText.setString("Нажмите enter чтобы начать.");
     infoText.setPositionCenter({ width * 0.5f, height * 0.5f });
-    bool playing = false;
 
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
             if (event->is<sf:: Event::Closed>()) {
                 window->close();
-            } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
-            {
-                if (keyPressed->scancode == sf::Keyboard::Scan::Enter)
-                {
-                    playing = true;
-                }
             }
         }
         window->clear(sf::Color::Black);
+
         infoText.render(window);
 
-        if (playing) {
+        window->display();
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
             break;
         }
-
-        window->display();
     }
 
-    timer.start();
+    timer.restart();
 
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
@@ -109,8 +114,6 @@ void game(int time, int modules[6]) {
         }
         window->clear(sf::Color::Black);
 
-        display.render(window);
-
         if (seconds != std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60)) {
             if (int(time - timer.getElapsedTime().asSeconds()) % 60 < 10) {
                 seconds = "0" + std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60);
@@ -124,6 +127,14 @@ void game(int time, int modules[6]) {
             }
             display.setString(minutes + ":" + seconds);
         }
+        for (short i = 0; i < 6; i++) {
+            modules[i]->process(int(time - timer.getElapsedTime().asSeconds()));
+        }
+
+        for (short i = 0; i < 6; i++) {
+            modules[i]->render(window);
+        }
+        display.render(window);
 
         window->display();
     }
@@ -132,7 +143,7 @@ void game(int time, int modules[6]) {
 }
 
 void startGame() { // Это будет меню выбора сложности. Оно будет выбирать модули и время для игры.
-    int m[6]{1};
+    int m[6]{0};
     game(235, m);
 }
 
@@ -165,7 +176,7 @@ int main() { // Это стартовое меню. Пока оно просто
     window->close();
     delete window;
 
-    win(10);
+    startGame();
 
     return 0;
 }
