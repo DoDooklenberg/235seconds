@@ -70,11 +70,18 @@ void game(int time, int moduleUIDs[6]) {
 
     unsigned int moduleSide;
     BaseModule* modules[6];
-    for (short i = 0; i < 6; i++) {
+    for (short i = 0; i < 3; i++) {
         if (moduleUIDs[i]) {
             // TODO Добавить нужные модули
         } else {
-            modules[i] = new BaseModule({i*150.f, i*150.f}, {(i + 1)*150.f, (i + 1)*150.f}, 10);
+            modules[i] = new BaseModule({width * 0.05f + i * width * 0.3f, height * 0.2f}, {width * 0.05f + (i + 1) * width * 0.3f, height * 0.55f}, 10);
+        }
+    }
+    for (short i = 3; i < 6; i++) {
+        if (moduleUIDs[i]) {
+            // TODO Добавить нужные модули
+        } else {
+            modules[i] = new BaseModule({width * 0.05f + (i - 3) * width * 0.3f, height * 0.6f}, {width * 0.05f + (i - 2) * width * 0.3f, height * 0.95f}, 10);
         }
     }
 
@@ -128,7 +135,7 @@ void game(int time, int moduleUIDs[6]) {
             display.setString(minutes + ":" + seconds);
         }
         for (short i = 0; i < 6; i++) {
-            modules[i]->process(int(time - timer.getElapsedTime().asSeconds()));
+            modules[i]->process(window, int(time - timer.getElapsedTime().asSeconds()));
         }
 
         for (short i = 0; i < 6; i++) {
