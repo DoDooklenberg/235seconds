@@ -1,7 +1,7 @@
 #include "basemodule.h"
 #include <SFML/Graphics.hpp>
 
-BaseModule::BaseModule(sf::Vector2f newOrigin, float newSide, std::string newSerial): origin{newOrigin}, side{newSide}, serial{newSerial} {}// Простой конструктор
+BaseModule::BaseModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont): origin{newOrigin}, side{newSide}, serial{newSerial}, font{newFont} {}// Простой конструктор
 
 bool BaseModule::isPosInModule(sf::Vector2f pos) // Определение попадания координат в модуль
 {
@@ -12,6 +12,11 @@ bool BaseModule::isPosInModule(sf::Vector2f pos) // Определение по�
         return true;
     }
     return false;
+}
+
+bool BaseModule::getIsDone()
+{
+    return isDone;
 }
 
 void BaseModule::process(sf::RenderWindow* window, int time) {}

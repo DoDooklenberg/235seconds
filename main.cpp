@@ -91,7 +91,7 @@ void game(int time, int moduleUIDs[6]) {
         if (moduleUIDs[i]) {
             // TODO Добавить нужные модули
         } else {
-            modules[i] = new BaseModule(origin, moduleSide, "");
+            modules[i] = new BaseModule(origin, moduleSide, "", font);
         }
     }
 
