@@ -40,7 +40,6 @@ void win(int time) {
 void game(int time, int moduleUIDs[6]) {
     sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setVerticalSyncEnabled(true);
-    window->setKeyRepeatEnabled(false);
     float width = window->getSize().x;
     float height = window->getSize().y;
 
@@ -51,7 +50,7 @@ void game(int time, int moduleUIDs[6]) {
     window->display();
 
     Label display(font, "00:00", sf::Color::White, 50);
-    display.setPositionCenter({ width * 0.1f, height * 0.05f });
+    display.setPositionCenter({ width * 0.05f, height * 0.05f });
     std::string minutes, seconds;
     if (time % 60 < 10) {
         seconds = "0" + std::to_string(time % 60);
@@ -92,7 +91,7 @@ void game(int time, int moduleUIDs[6]) {
         if (moduleUIDs[i]) {
             // TODO Добавить нужные модули
         } else {
-            modules[i] = new BaseModule(origin, moduleSide, 10);
+            modules[i] = new BaseModule(origin, moduleSide, "");
         }
     }
 
