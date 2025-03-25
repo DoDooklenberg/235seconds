@@ -2,6 +2,7 @@
 #include <string>
 #include "label.h"
 #include "basemodule.h"
+#include "drawingmodule.h"
 
 const sf::Font font("font.ttf");
 
@@ -88,10 +89,13 @@ void game(int time, int moduleUIDs[6]) {
         } else {
             origin += {moduleSide * 0.5f, 0.f};
         }
-        if (moduleUIDs[i]) {
-            // TODO Добавить нужные модули
-        } else {
+        switch (moduleUIDs[i]) {
+        case 1:
+            modules[i] = new DrawingModule(origin, moduleSide, "");
+            break;
+        default:
             modules[i] = new BaseModule(origin, moduleSide, "");
+            break;
         }
     }
 
@@ -161,6 +165,7 @@ void game(int time, int moduleUIDs[6]) {
 
 void startGame() { // Это будет меню выбора сложности. Оно будет выбирать модули и время для игры.
     int m[6]{0};
+    m[0] = 1;
     game(235, m);
 }
 
