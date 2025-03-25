@@ -91,10 +91,10 @@ void game(int time, int moduleUIDs[6]) {
         }
         switch (moduleUIDs[i]) {
         case 1:
-            modules[i] = new DrawingModule(origin, moduleSide, "");
+            modules[i] = new DrawingModule(origin, moduleSide, "", font);
             break;
         default:
-            modules[i] = new BaseModule(origin, moduleSide, "");
+            modules[i] = new BaseModule(origin, moduleSide, "", font);
             break;
         }
     }
@@ -165,7 +165,7 @@ void game(int time, int moduleUIDs[6]) {
 
 void startGame() { // Это будет меню выбора сложности. Оно будет выбирать модули и время для игры.
     int m[6]{0};
-    m[0] = 1;
+    m[1] = 1;
     game(235, m);
 }
 
