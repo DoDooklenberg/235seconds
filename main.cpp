@@ -68,20 +68,31 @@ void game(int time, int moduleUIDs[6]) {
     sf::Clock timer;
     timer.stop();
 
-    unsigned int moduleSide;
     BaseModule* modules[6];
-    for (short i = 0; i < 3; i++) {
-        if (moduleUIDs[i]) {
-            // TODO Добавить нужные модули
-        } else {
-            modules[i] = new BaseModule({width * 0.05f + i * width * 0.3f, height * 0.2f}, {width * 0.05f + (i + 1) * width * 0.3f, height * 0.55f}, 10);
-        }
+
+    float moduleSide;
+    if (width * 2 <= height * 3) {
+        moduleSide = 0.3f * width;
+    } else {
+        moduleSide = 0.45f * height;
     }
-    for (short i = 3; i < 6; i++) {
+    sf::Vector2f origin;
+    for (short i = 0; i < 6; i++) {
+        origin = {width * 0.5f, height * 0.5f};
+        if (i % 2 == 0) {
+            origin += {0.f, -moduleSide};
+        }
+        if (i % 3 == 0) {
+            origin += {moduleSide * -1.5f, 0.f};
+        } else if (i % 3 == 1) {
+            origin += {moduleSide * -0.5f, 0.f};
+        } else {
+            origin += {moduleSide * 0.5f, 0.f};
+        }
         if (moduleUIDs[i]) {
             // TODO Добавить нужные модули
         } else {
-            modules[i] = new BaseModule({width * 0.05f + (i - 3) * width * 0.3f, height * 0.6f}, {width * 0.05f + (i - 2) * width * 0.3f, height * 0.95f}, 10);
+            modules[i] = new BaseModule(origin, moduleSide, 10);
         }
     }
 
@@ -176,7 +187,7 @@ int main() { // Это стартовое меню. Пока оно просто
         }
         window->clear(sf::Color::White);
 
-        window->close();
+        //window->close();
 
         window->display();
     }

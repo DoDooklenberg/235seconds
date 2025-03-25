@@ -1,11 +1,12 @@
 #include "basemodule.h"
 #include <SFML/Graphics.hpp>
 
-BaseModule::BaseModule(sf::Vector2f newStart, sf::Vector2f newEnd, unsigned int newSerial): start{newStart}, end{newEnd}, serial{newSerial} {}
+BaseModule::BaseModule(sf::Vector2f newOrigin, float newSide, unsigned int newSerial): origin{newOrigin}, side{newSide}, serial{newSerial} {}
 
 bool BaseModule::isPosInModule(sf::Vector2f pos)
 {
-    if ((pos.x >= start.x && pos.x <= end.x) && (pos.y >= start.y && pos.y <= end.y)) {
+    sf::Vector2f end{origin.x + side, origin.y + side};
+    if ((pos.x >= origin.x && pos.x <= end.x) && (pos.y >= origin.y && pos.y <= end.y)) {
         return true;
     }
     return false;
@@ -21,13 +22,14 @@ void BaseModule::process(sf::RenderWindow* window, int time)
 
 void BaseModule::render(sf::RenderWindow *window)
 {
+    sf::Vector2f end{origin.x + side, origin.y + side};
     std::array vertices =
         {
-        sf::Vertex{{start.x, start.y}},
-        sf::Vertex{{end.x, start.y}},
+        sf::Vertex{{origin.x, origin.y}},
+        sf::Vertex{{end.x, origin.y}},
         sf::Vertex{{end.x, end.y}},
-        sf::Vertex{{start.x, end.y}},
-        sf::Vertex{{start.x, start.y}},
+        sf::Vertex{{origin.x, end.y}},
+        sf::Vertex{{origin.x, origin.y}},
         };
 
     window->draw(vertices.data(), vertices.size(), sf::PrimitiveType::LineStrip);
