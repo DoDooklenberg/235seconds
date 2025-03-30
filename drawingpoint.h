@@ -15,7 +15,7 @@ private:
     int number;
     bool isActive{false};
 public:
-    DrawingPoint(sf::Vector2f pos, sf::Font newFont, float r, int num);
+    DrawingPoint(sf::Font newFont, sf::Vector2f pos, float r, int num);
     sf::Vector2f getPosition();
     void setTarget(sf::Vector2f newTarget);
     void resetTarget();

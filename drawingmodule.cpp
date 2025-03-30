@@ -1,30 +1,35 @@
 #include "drawingmodule.h"
-#include "drawingpoint.h"
+#include <iostream>
 
 
 DrawingModule::DrawingModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):
-    BaseModule(newOrigin, newSide, newSerial, newFont), points{DrawingPoint( origin + sf::Vector2f{100, 100}, font, 5.f, 1), DrawingPoint(origin + sf::Vector2f{200, 200}, font, 5.f, 1), DrawingPoint(origin + sf::Vector2f{200, 100}, font, 5.f, 1), DrawingPoint(origin + sf::Vector2f{100, 200}, font, 5.f, 1)}
-{}
+    BaseModule(newOrigin, newSide, newSerial, newFont)
+{
+    amt = 8;
+    for (int i = 0; i < amt; i++){
+        points.push_back(DrawingPoint(newFont, origin + sf::Vector2f{i * 30.f, i * 30.f}, 5.f, i + 1));
+    }
+}
 
 void DrawingModule::process(sf::RenderWindow *window, int time)
 {
     if (isPosInModule(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
             if (currentPoint) {
-                points[currentPoint - 1].setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
-                for (int i = 0; i < 4; i++){
-                    if ((points[i].getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).lengthSquared() <= 400.f && currentPoint != i + 1 && !points[i].isPrecursor()) {
-                        points[currentPoint - 1].setNext(&points[i]);
-                        points[currentPoint - 1].setTarget(points[i].getPosition());
-                        points[i].setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
+                points.at(currentPoint - 1).setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
+                for (int i = 0; i < amt; i++){
+                    if ((points.at(i).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).lengthSquared() <= 400.f && currentPoint != i + 1 && !points.at(i).isPrecursor()) {
+                        points.at(currentPoint - 1).setNext(&points.at(i));
+                        points.at(currentPoint - 1).setTarget(points.at(i).getPosition());
+                        points.at(i).setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
                         currentPoint = i + 1;
                         break;
                     }
                 }
             } else {
-                for (int i = 0; i < 4; i++){
-                    if ((points[i].getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).lengthSquared() <= 400.f) {
-                        points[i].setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
+                for (int i = 0; i < amt; i++){
+                    if ((points.at(i).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).lengthSquared() <= 400.f) {
+                        points.at(i).setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
                         currentPoint = i + 1;
                         break;
                     }
@@ -32,14 +37,15 @@ void DrawingModule::process(sf::RenderWindow *window, int time)
             }
         } else {
             currentPoint = 0;
-            for (int i = 0; i < 4; i++){
-                points[i].resetTarget();
+            for (int i = 0; i < amt; i++){
+                points.at(i).resetTarget();
             }
         }
     } else {
         currentPoint = 0;
-        for (int i = 0; i < 4; i++){
-            points[i].resetTarget();
+        for (int i = 0; i < amt; i++){
+            std::cout << i;
+            points.at(i).resetTarget();
         }
     }
 }
@@ -56,7 +62,7 @@ void DrawingModule::render(sf::RenderWindow *window)
          };
 
     window->draw(vertices.data(), vertices.size(), sf::PrimitiveType::LineStrip);
-    for (int i = 0; i < 4; i++){
-        points[i].render(window);
+    for (int i = 0; i < amt; i++){
+        points.at(i).render(window);
     }
 }

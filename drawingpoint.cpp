@@ -1,7 +1,7 @@
 #include "drawingpoint.h"
 #include <math.h>
 
-DrawingPoint::DrawingPoint(sf::Vector2f pos, sf::Font newFont, float r, int num): position{pos}, font{newFont}, radius{r}, number{num}
+DrawingPoint::DrawingPoint(sf::Font newFont, sf::Vector2f pos, float r, int num): font{newFont}, position{pos}, radius{r}, number{num}
 {
     point = sf::CircleShape(r);
     point.setPosition(position - sf::Vector2f{r, r});
