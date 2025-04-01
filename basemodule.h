@@ -11,10 +11,12 @@ protected:
     float side; // Длинна стороны модуля(Насколько далеко от origin можно рисовать)
     std::string serial; // Серийный номер, он будет изпользоваться в некоторых головоломках
     bool isDone = false;
+    int mistakes = 0;
     sf::Font font;
 public:
     BaseModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont); // Конструктор, ничего кроме записи в переменные не делает
     bool isPosInModule(sf::Vector2f pos); // Эта функция будет определять по переданным координатам, принадлежат ли они модулю.
+    int getMistakes();
     bool getIsDone();
     virtual void process(sf::RenderWindow* window, int time); // Логика модуля
     virtual void render(sf::RenderWindow* window); // Отрисовка модуля
