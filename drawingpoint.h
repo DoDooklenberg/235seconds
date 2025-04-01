@@ -2,6 +2,7 @@
 #define DRAWINGPOINT_H
 
 #include <SFML/Graphics.hpp>
+#include "label.h"
 
 class DrawingPoint
 {
@@ -14,6 +15,7 @@ private:
     float radius;
     int number;
     bool isActive{false};
+    Label label;
 public:
     DrawingPoint(sf::Font newFont, sf::Vector2f pos, float r, int num);
     sf::Vector2f getPosition();
