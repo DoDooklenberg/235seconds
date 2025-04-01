@@ -14,6 +14,11 @@ bool BaseModule::isPosInModule(sf::Vector2f pos) // Определение по�
     return false;
 }
 
+int BaseModule::getMistakes()
+{
+    return mistakes;
+}
+
 bool BaseModule::getIsDone()
 {
     return isDone;
