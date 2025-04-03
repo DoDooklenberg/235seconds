@@ -1,6 +1,8 @@
 #include "wiresmodule.h"
+#include <iostream>
 
-WiresModule::WiresModule()
+WiresModule::WiresModule():
+    BaseModule()
 {
 
 }
