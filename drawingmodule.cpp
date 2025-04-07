@@ -4,9 +4,33 @@
 DrawingModule::DrawingModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):
     BaseModule(newOrigin, newSide, newSerial, newFont)
 {
-    amt = 16;
+    genertePoints();
+}
+
+void DrawingModule::genertePoints()
+{
+    std::srand(std::time({}));
+    amt = 10 + rand() % 11;
+    int j = 0;
     for (int i = 0; i < amt; i++){
-        points.push_back(DrawingPoint(newFont, origin + sf::Vector2f{i * 30.f, i * 30.f}, 5.f, i + 1));
+        sf::Vector2f pointPos = origin + sf::Vector2f{side * 0.9f * 0.01f * (rand() % 100) + side * 0.05f, side * 0.9f * 0.01f * (rand() % 100) + side * 0.05f};
+        if (points.empty()){
+            points.push_back(DrawingPoint(font, pointPos, 5.f, i + 1));
+            continue;
+        }
+        j = 0;
+        while (1){
+            if ((points.at(j).getPosition() - pointPos).lengthSquared() <= 5000.f) {
+                pointPos = origin + sf::Vector2f{side * 0.8f * 0.01f * (rand() % 100) + side * 0.1f, side * 0.9f * 0.01f * (rand() % 100) + side * 0.05f};
+                j = 0;
+            } else {
+                j++;
+                if (j >= points.size()) {
+                    break;
+                }
+            }
+        }
+        points.push_back(DrawingPoint(font, pointPos, 5.f, i + 1));
     }
 }
 
@@ -44,6 +68,12 @@ void DrawingModule::process(sf::RenderWindow *window, int time)
         for (int i = 0; i < amt; i++){
             points.at(i).resetTarget();
         }
+    }
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
+        currentPoint = 0;
+        points.clear();
+        amt = 0;
+        genertePoints();
     }
 }
 
