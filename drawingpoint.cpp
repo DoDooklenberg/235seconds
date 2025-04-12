@@ -2,7 +2,7 @@
 #include <math.h>
 #include <string>
 
-DrawingPoint::DrawingPoint(sf::Font newFont, sf::Vector2f pos, float r, int num): font{newFont}, position{pos}, radius{r}, number{num}, label{font, std::to_string(num), sf::Color::White, 20, pos}
+DrawingPoint::DrawingPoint(sf::Font newFont, sf::Vector2f pos, float r, int real, int fake): font{newFont}, position{pos}, radius{r}, realNumber{real}, fakeNumber{fake}, label{font, std::to_string(fake), sf::Color::White, 20, pos}
 {
     point = sf::CircleShape(r);
     point.setPosition(position - sf::Vector2f{r, r});
@@ -28,6 +28,7 @@ void DrawingPoint::setTarget(sf::Vector2f newTarget)
 
 void DrawingPoint::resetTarget()
 {
+    next = NULL;
     isActive = false;
 }
 
@@ -57,6 +58,14 @@ bool DrawingPoint::isPrecursor()
     return isActive;
 }
 
+bool DrawingPoint::isRight()
+{
+    if ((next != NULL) && ((realNumber + 1) == next->getRealNumder())) {
+        return true;
+    }
+    return false;
+}
+
 void DrawingPoint::render(sf::RenderWindow *window)
 {
     window->draw(point);
@@ -65,4 +74,14 @@ void DrawingPoint::render(sf::RenderWindow *window)
     {
         window->draw(line);
     }
+}
+
+int DrawingPoint::getFakeNumder()
+{
+    return fakeNumber;
+}
+
+int DrawingPoint::getRealNumder()
+{
+    return realNumber;
 }

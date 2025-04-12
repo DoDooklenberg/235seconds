@@ -14,6 +14,8 @@ private:
 public:
     DrawingModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);
     void genertePoints();
+    bool checkWin();
+    int getFakeNumber(int real);
     void process(sf::RenderWindow *window, int time);
     void render(sf::RenderWindow *window);
 };
