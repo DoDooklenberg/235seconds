@@ -17,7 +17,7 @@ void DrawingModule::genertePoints()
     for (int i = 0; i < amt; i++){
         sf::Vector2f pointPos = origin + sf::Vector2f{side * 0.8f * 0.01f * (rand() % 100) + side * 0.1f, side * 0.8f * 0.01f * (rand() % 100) + side * 0.1f};
         if (points.empty()){
-            points.push_back(DrawingPoint(font, pointPos, 5.f, i + 1, getFakeNumber(i + 1)));
+            points.push_back(DrawingPoint(font, pointPos, side * 0.01f, i + 1, getFakeNumber(i + 1)));
             continue;
         }
         j = 0;
@@ -32,7 +32,7 @@ void DrawingModule::genertePoints()
                 }
             }
         }
-        points.push_back(DrawingPoint(font, pointPos, 5.f, i + 1, getFakeNumber(i + 1)));
+        points.push_back(DrawingPoint(font, pointPos, side * 0.01f, i + 1, getFakeNumber(i + 1)));
     }
 }
 
@@ -219,7 +219,7 @@ void DrawingModule::process(sf::RenderWindow *window, int time)
                 if (currentPoint) {
                     points.at(currentPoint - 1).setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
                     for (int i = 0; i < amt; i++){
-                        if ((points.at(i).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).lengthSquared() <= 300.f && currentPoint != i + 1 && !points.at(i).isPrecursor()) {
+                        if ((points.at(i).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).length() <= side * 0.035f && currentPoint != i + 1 && !points.at(i).isPrecursor()) {
                             points.at(currentPoint - 1).setNext(&points.at(i));
                             points.at(i).setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
                             currentPoint = i + 1;
@@ -228,7 +228,7 @@ void DrawingModule::process(sf::RenderWindow *window, int time)
                     }
                 } else {
                     for (int i = 0; i < amt; i++){
-                        if ((points.at(i).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).lengthSquared() <= 400.f) {
+                        if ((points.at(i).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).length() <= side * 0.035f) {
                             points.at(i).setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
                             currentPoint = i + 1;
                             break;
@@ -263,11 +263,11 @@ void DrawingModule::render(sf::RenderWindow *window)
 {
     std::array vertices =
         {
-         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.01f}, sf::Color::Blue},
-         sf::Vertex{{origin.x + side * 0.99f, origin.y + side * 0.01f}, sf::Color::Blue},
-         sf::Vertex{{origin.x + side * 0.99f, origin.y + side * 0.99f}, sf::Color::Blue},
-         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.99f}, sf::Color::Blue},
-         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.01f}, sf::Color::Blue},
+         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.01f}},
+         sf::Vertex{{origin.x + side * 0.99f, origin.y + side * 0.01f}},
+         sf::Vertex{{origin.x + side * 0.99f, origin.y + side * 0.99f}},
+         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.99f}},
+         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.01f}},
          };
 
     window->draw(vertices.data(), vertices.size(), sf::PrimitiveType::LineStrip);

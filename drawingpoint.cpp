@@ -2,7 +2,7 @@
 #include <math.h>
 #include <string>
 
-DrawingPoint::DrawingPoint(sf::Font newFont, sf::Vector2f pos, float r, int real, int fake): font{newFont}, position{pos}, radius{r}, realNumber{real}, fakeNumber{fake}, label{font, std::to_string(fake), sf::Color::White, 20, pos}
+DrawingPoint::DrawingPoint(sf::Font newFont, sf::Vector2f pos, float r, int real, int fake): font{newFont}, position{pos}, radius{r}, realNumber{real}, fakeNumber{fake}, label{font, std::to_string(fake), sf::Color::White, (int)(r * 5), pos}
 {
     point = sf::CircleShape(r);
     point.setPosition(position - sf::Vector2f{r, r});
@@ -20,7 +20,7 @@ void DrawingPoint::setTarget(sf::Vector2f newTarget)
     target = newTarget;
     sf::Vector2f tempVec = target - position;
     if (tempVec.length() > radius) {
-        line.setSize({tempVec.length(), 1.f});
+        line.setSize({tempVec.length(), radius * 0.2f});
         line.setRotation(tempVec.angle());
         isActive = true;
     }
@@ -38,7 +38,7 @@ void DrawingPoint::setNext(DrawingPoint *newNext)
     target = next->getPosition();
     sf::Vector2f tempVec = target - position;
     if (tempVec.length() > radius) {
-        line.setSize({tempVec.length(), 1.f});
+        line.setSize({tempVec.length(), radius * 0.2f});
         line.setRotation(tempVec.angle());
         isActive = true;
     } else {
