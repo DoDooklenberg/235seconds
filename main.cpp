@@ -2,6 +2,7 @@
 #include <string>
 #include "label.h"
 #include "basemodule.h"
+#include "wiresmodule.h"
 
 const sf::Font font("font.ttf");
 
@@ -88,10 +89,16 @@ void game(int time, int moduleUIDs[6]) {
         } else {
             origin += {moduleSide * 0.5f, 0.f};
         }
-        if (moduleUIDs[i]) {
-            // TODO Добавить нужные модули
-        } else {
-            modules[i] = new BaseModule(origin, moduleSide, "", font);
+        switch (moduleUIDs[i]) {
+            case (0):
+                modules[i] = new BaseModule(origin, moduleSide, "", font);
+                break;
+            default:
+                modules[i] = new BaseModule(origin, moduleSide, "", font);
+                break;
+            case (2):
+                modules[i] = new WiresModule(origin, moduleSide, "", font);
+                break;
         }
     }
 
@@ -161,6 +168,7 @@ void game(int time, int moduleUIDs[6]) {
 
 void startGame() { // Это будет меню выбора сложности. Оно будет выбирать модули и время для игры.
     int m[6]{0};
+    m[0] = 2;
     game(235, m);
 }
 
