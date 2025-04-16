@@ -1,4 +1,5 @@
 #include "drawingmodule.h"
+#include <iostream>
 
 
 DrawingModule::DrawingModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):
@@ -9,6 +10,23 @@ DrawingModule::DrawingModule(sf::Vector2f newOrigin, float newSide, std::string 
 
 void DrawingModule::genertePoints()
 {
+    auto getFakeNumber = [=](int real){if (amt == 12) {return numbers_12[real];} else if (amt == 13) {return numbers_13[real];} else {return numbers_14[real];} };
+    /*
+     * Я переписал логику ложной точки на лямбду, ура. Понятнее не стало, но по крайне мере это не так страшно выглядит.
+     * Точка с номером 2 обозначена как 10, но если остаток от деления кол-ва точек на 3 равен 0, то как 9
+     * Точка с номером 3 обозначена как 1, но если остаток от деления кол-ва точек на 3 равен 1, то как 5
+     * Точка с номером 4 обозначена как 8, но если остаток от деления кол-ва точек на 3 равен 1, то как 3
+     * Точка с номером 5 обозначена как 2, но если остаток от деления кол-ва точек на 3 равен 2, то как 4
+     * Точка с номером 6 обозначена как 9, но если остаток от деления кол-ва точек на 3 равен 0, то как 11
+     * Точка с номером 7 обозначена как 6, но если остаток от деления кол-ва точек на 3 равен 2, то как 12
+     * Точка с номером 8 обозначена как 12, но если остаток от деления кол-ва точек на 3 равен 2, то как 14
+     * Точка с номером 9 обозначена как 13, но если остаток от деления кол-ва точек на 3 равен 0, то как 3
+     * Точка с номером 10 обозначена как 5, но если остаток от деления кол-ва точек на 3 равен 1, то как 1
+     * Точка с номером 11 обозначена как 7, но если остаток от деления кол-ва точек на 3 равен 2, то как 2
+     * Точка с номером 12 обозначена как 11, но если остаток от деления кол-ва точек на 3 равен 0, то как 10
+     * Точка с номером 13 обозначена как 8, но если остаток от деления кол-ва точек на 3 равен 2, то как 7
+     * Точка с номером 14 обозначена как 3, но если остаток от деления кол-ва точек на 3 равен 1, то как 4
+     */
     std::srand(std::time({})); //TODO Вынести рандом в окно выбора сложности
     currentPoint = 0;
     points.clear();
@@ -17,7 +35,7 @@ void DrawingModule::genertePoints()
     for (int i = 0; i < amt; i++){
         sf::Vector2f pointPos = origin + sf::Vector2f{side * 0.8f * 0.01f * (rand() % 100) + side * 0.1f, side * 0.8f * 0.01f * (rand() % 100) + side * 0.1f};
         if (points.empty()){
-            points.push_back(DrawingPoint(font, pointPos, side * 0.01f, i + 1, getFakeNumber(i + 1)));
+            points.push_back(DrawingPoint(font, pointPos, side * 0.01f, i + 1, getFakeNumber(i)));
             continue;
         }
         j = 0;
@@ -32,7 +50,7 @@ void DrawingModule::genertePoints()
                 }
             }
         }
-        points.push_back(DrawingPoint(font, pointPos, side * 0.01f, i + 1, getFakeNumber(i + 1)));
+        points.push_back(DrawingPoint(font, pointPos, side * 0.01f, i + 1, getFakeNumber(i)));
     }
 }
 
@@ -52,162 +70,6 @@ bool DrawingModule::checkWin()
         mistakes++;
         genertePoints();
         return false;
-    }
-}
-
-int DrawingModule::getFakeNumber(int real) // Боже какой ужас, но как переписать это более читаемо я хз
-{
-    /*
-     * 1 -> 6, но если остаток от деления количества точек на 3 равен 0 или 1, то 4.
-     * 2 -> 9, но если остаток от деления количества точек на 3 равен 2 или 0, то 10.
-     * 3 -> 5, но если остаток от деления количества точек на 3 равен 1 или 2, то 1.
-     * 4 -> 3, но если остаток от деления количества точек на 3 равен 1 или 2, то 8.
-     * 5 -> 4, но если остаток от деления количества точек на 3 равен 0 или 1, то 2.
-     * 6 -> 11, но если остаток от деления количества точек на 3 равен 2 или 0, то 9.
-     * 7 -> 12, но если остаток от деления количества точек на 3 равен 0 или 1, то 6.
-     * 8 -> 14, но если остаток от деления количества точек на 3 равен 0 или 1, то 12.
-     * 9 -> 3, но если остаток от деления количества точек на 3 равен 2 или 0, то 13.
-     * 10 -> 1, но если остаток от деления количества точек на 3 равен 1 или 2, то 5.
-     * 11 -> 2, но если остаток от деления количества точек на 3 равен 0 или 1, то 7.
-     * 12 -> 10, но если остаток от деления количества точек на 3 равен 2 или 0, то 11.
-     * 13 -> 8, но если остаток от деления количества точек на 3 равен 2, то 7.
-     * 14 -> 3.
-     */
-    if (amt == 12) {
-        switch (real) {
-        case 4:
-            return 1;
-            break;
-        case 9:
-            return 2;
-            break;
-        case 1:
-            return 3;
-            break;
-        case 8:
-            return 4;
-            break;
-        case 2:
-            return 5;
-            break;
-        case 11:
-            return 6;
-            break;
-        case 6:
-            return 7;
-            break;
-        case 12:
-            return 8;
-            break;
-        case 3:
-            return 9;
-            break;
-        case 5:
-            return 10;
-            break;
-        case 7:
-            return 11;
-            break;
-        case 10:
-            return 12;
-            break;
-        default:
-            return 0;
-            break;
-        }
-    } else if (amt == 13) {
-        switch (real) {
-        case 4:
-            return 1;
-            break;
-        case 10:
-            return 2;
-            break;
-        case 5:
-            return 3;
-            break;
-        case 3:
-            return 4;
-            break;
-        case 2:
-            return 5;
-            break;
-        case 9:
-            return 6;
-            break;
-        case 6:
-            return 7;
-            break;
-        case 12:
-            return 8;
-            break;
-        case 13:
-            return 9;
-            break;
-        case 1:
-            return 10;
-            break;
-        case 7:
-            return 11;
-            break;
-        case 11:
-            return 12;
-            break;
-        case 8:
-            return 13;
-            break;
-        default:
-            return 0;
-            break;
-        }
-    } else {
-        switch (real) {
-        case 6:
-            return 1;
-            break;
-        case 10:
-            return 2;
-            break;
-        case 1:
-            return 3;
-            break;
-        case 8:
-            return 4;
-            break;
-        case 4:
-            return 5;
-            break;
-        case 9:
-            return 6;
-            break;
-        case 12:
-            return 7;
-            break;
-        case 14:
-            return 8;
-            break;
-        case 13:
-            return 9;
-            break;
-        case 5:
-            return 10;
-            break;
-        case 2:
-            return 11;
-            break;
-        case 11:
-            return 12;
-            break;
-        case 7:
-            return 13;
-            break;
-        case 3:
-            return 14;
-            break;
-        default:
-            return 0;
-            break;
-        }
     }
 }
 
