@@ -1,5 +1,4 @@
 #include "label.h"
-#include <SFML/Graphics.hpp>
 #include <string>
 
 Label::Label(sf::Font newFont, std::string string, sf::Color newColor, int newSize, sf::Vector2f newPos) : font{newFont}, content{string}, color{newColor}, size{newSize}, pos{newPos}{}
