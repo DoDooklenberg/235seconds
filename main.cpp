@@ -1,8 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include "label.h"
+#include "button.h"
 #include "basemodule.h"
 #include "drawingmodule.h"
+
+#include <iostream>
 
 const sf::Font font("font.ttf");
 
@@ -66,7 +69,6 @@ void game(int time, int moduleUIDs[6]) {
     display.setString(minutes + ":" + seconds);
 
     sf::Clock timer;
-    timer.stop();
 
     BaseModule* modules[6];
 
@@ -95,26 +97,6 @@ void game(int time, int moduleUIDs[6]) {
             break;
         default:
             modules[i] = new BaseModule(origin, moduleSide, "", font);
-            break;
-        }
-    }
-
-    infoText.setString("Нажмите enter чтобы начать.");
-    infoText.setPositionCenter({ width * 0.5f, height * 0.5f });
-
-    while (window->isOpen()) {
-        while (const std::optional event = window->pollEvent()) {
-            if (event->is<sf:: Event::Closed>()) {
-                window->close();
-            }
-        }
-        window->clear(sf::Color::Black);
-
-        infoText.render(window);
-
-        window->display();
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
             break;
         }
     }
@@ -163,10 +145,35 @@ void game(int time, int moduleUIDs[6]) {
     delete window;
 }
 
-void startGame() { // Это будет меню выбора сложности. Оно будет выбирать модули и время для игры.
+void startGame() {
+    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
+    float width = window->getSize().x;
+    float height = window->getSize().y;
+    window->setFramerateLimit(60);
+
+    Button yesButton = Button({font, "Да!", sf::Color::Green}, {width * 0.1f, height * 0.1f}, {100.f, 200.f}, sf::Color::White);
+
+    while (window->isOpen()) {
+        while (const std::optional event = window->pollEvent()) {
+            if (event->is<sf:: Event::Closed>()) {
+                window->close();
+            } else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+            {
+                //std::cout << "click: " << sf::Mouse::getPosition(*window).x << " " << sf::Mouse::getPosition(*window).y << std::endl;
+            }
+        }
+        window->clear(sf::Color::Black);
+
+        yesButton.render(window);
+
+        window->display();
+    }
+    window->close();
+    delete window;
+
     int m[6]{0};
     m[0] = 1;
-    game(235, m);
+    //game(235, m);
 }
 
 int main() { // Это стартовое меню. Пока оно просто ждет нажатие в себя.
@@ -174,7 +181,6 @@ int main() { // Это стартовое меню. Пока оно просто
     unsigned int height = 360;
     sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width, height }), "235seconds");
     window->setFramerateLimit(60);
-    sf::sleep(sf::milliseconds(200));
 
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
