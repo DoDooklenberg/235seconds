@@ -1,6 +1,5 @@
 #include "basemodule.h"
 #include <SFML/Graphics.hpp>
-#include "drawwires.h"
 
 BaseModule::BaseModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont): origin{newOrigin}, side{newSide}, serial{newSerial}, font{newFont} {}// Простой конструктор
 
