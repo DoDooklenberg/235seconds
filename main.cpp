@@ -150,19 +150,33 @@ void startGame() {
     float width = window->getSize().x;
     float height = window->getSize().y;
     window->setFramerateLimit(60);
+    int m[6]{0};
 
-    Button yesButton = Button({font, "Да!", sf::Color::Green}, {width * 0.1f, height * 0.1f}, {100.f, 200.f}, sf::Color::White);
+    sf::RectangleShape shape{{100.f, 200.f}};
+    shape.setPosition({width * 0.1f, height * 0.1f});
+    shape.setFillColor(sf::Color::White);
+    shape.setOutlineThickness(4.f);
+    shape.setOutlineColor(sf::Color::White);
+
+    Button yesButton = Button({font, "Да!", sf::Color::Green}, &shape);
 
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
             if (event->is<sf:: Event::Closed>()) {
                 window->close();
-            } else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-            {
-                //std::cout << "click: " << sf::Mouse::getPosition(*window).x << " " << sf::Mouse::getPosition(*window).y << std::endl;
             }
         }
         window->clear(sf::Color::Black);
+
+        if (yesButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+            shape.setOutlineColor(sf::Color(128, 128, 128));
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+                m[0] = 1;
+                window->close();
+            }
+        } else {
+            shape.setOutlineColor(sf::Color::White);
+        }
 
         yesButton.render(window);
 
@@ -171,9 +185,7 @@ void startGame() {
     window->close();
     delete window;
 
-    int m[6]{0};
-    m[0] = 1;
-    //game(235, m);
+    game(235, m);
 }
 
 int main() { // Это стартовое меню. Пока оно просто ждет нажатие в себя.
