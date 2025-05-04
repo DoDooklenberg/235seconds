@@ -44,3 +44,13 @@ bool Button::isPosIn(sf::Vector2f pos)
     }
     return false;
 }
+
+sf::Shape *Button::getShape()
+{
+    return shape;
+}
+
+Label *Button::getLabel()
+{
+    return &label;
+}
