@@ -16,6 +16,8 @@ public:
     void reloadLabel();
     void render(sf::RenderWindow *window);
     bool isPosIn(sf::Vector2f pos);
+    sf::Shape* getShape();
+    Label* getLabel();
 };
 
 #endif // BUTTON_H
