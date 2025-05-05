@@ -4,6 +4,7 @@
 #include "button.h"
 #include "basemodule.h"
 #include "drawingmodule.h"
+#include "clickermodule.h"
 
 const sf::Font font("font.ttf");
 
@@ -95,6 +96,9 @@ void game(int time, int moduleUIDs[6]) {
         switch (moduleUIDs[i]) {
         case 1:
             modules[i] = new DrawingModule(origin, moduleSide, "", font);
+            break;
+        case 2:
+            modules[i] = new ClickerModule(origin, moduleSide, "", font);
             break;
         default:
             modules[i] = new BaseModule(origin, moduleSide, "", font);
@@ -228,6 +232,7 @@ void startGame() {
     delete window;
 
     if (startGame) {
+        m[0] = 2;
         game(235, m);
     } else {
         main();
