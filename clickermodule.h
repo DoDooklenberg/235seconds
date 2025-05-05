@@ -18,7 +18,6 @@ private:
     unsigned int count = 0;
     bool isMousePressedLastFrame = false;
     Label displayCount;
-
 };
 
 #endif // CLICKERMODULE_H

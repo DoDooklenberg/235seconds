@@ -16,7 +16,7 @@ void ClickerModule::process(sf::RenderWindow *window, int time)
     if (mainButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
         mainButton.getLabel()->setColor(sf::Color::Green);
         if (!isMousePressedLastFrame) {
-            count+=1000000000;
+            count++;
             displayCount.setString(std::to_string(count));
             isMousePressedLastFrame = true;
         }
