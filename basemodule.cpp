@@ -24,7 +24,10 @@ bool BaseModule::getIsDone()
     return isDone;
 }
 
-void BaseModule::process(sf::RenderWindow* window, int time) {}
+void BaseModule::process(sf::RenderWindow* window, int time)
+{
+    isDone = true;
+}
 
 void BaseModule::render(sf::RenderWindow *window)
 {

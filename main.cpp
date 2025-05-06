@@ -3,7 +3,7 @@
 #include "label.h"
 #include "button.h"
 #include "basemodule.h"
-#include "wiresmodule.h"
+#include "drawingmodule.h"
 
 const sf::Font font("font.ttf");
 
@@ -41,6 +41,8 @@ void win(int time) {
     delete window;
 };
 
+void lose(int neutralized) {} // Заглушка
+
 void game(int time, int moduleUIDs[6]) {
     sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setVerticalSyncEnabled(true);
@@ -54,8 +56,8 @@ void game(int time, int moduleUIDs[6]) {
     infoText.render(window);
     window->display();
 
-    Label display(font, "00:00", sf::Color::White, 50);
-    display.setPositionCenter({ width * 0.05f, height * 0.05f });
+    Label display(font, "00:00", sf::Color::White, height * 0.08f);
+    display.setPositionCenter({ width * 0.5f, height * 0.95f });
     std::string minutes, seconds;
     if (time % 60 < 10) {
         seconds = "0" + std::to_string(time % 60);
@@ -71,13 +73,24 @@ void game(int time, int moduleUIDs[6]) {
 
     sf::Clock timer;
 
+    char symbols[37]  = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    std::string serial;
+    for (int i = 0; i<3; i++) {
+        serial += symbols[rand()%(10)];
+    }
+    for (int i = 0; i<9; i++) {
+        serial += symbols[rand()%(37)];
+    }
+    Label LSerial(font, serial, sf::Color::White, height * 0.08f);
+    LSerial.setPositionCenter({width * 0.5f, height * 0.05f});
+
     BaseModule* modules[6];
 
     float moduleSide;
-    if (width * 2 <= height * 3) {
-        moduleSide = 0.3f * width;
+    if (width * 2 <= height * 0.8f * 3) {
+        moduleSide = 0.34f * width;
     } else {
-        moduleSide = 0.45f * height;
+        moduleSide = 0.51f * height * 0.8f;
     }
     sf::Vector2f origin;
     for (short i = 0; i < 6; i++) {
@@ -94,15 +107,17 @@ void game(int time, int moduleUIDs[6]) {
         }
         switch (moduleUIDs[i]) {
         case 1:
-            modules[i] = new WiresModule(origin, moduleSide, "", font);
+            modules[i] = new DrawingModule(origin, moduleSide, serial, font);
             break;
         default:
-            modules[i] = new BaseModule(origin, moduleSide, "", font);
+            modules[i] = new BaseModule(origin, moduleSide, serial, font);
             break;
         }
     }
 
     timer.restart();
+    bool wining = false;
+    int neutralizedCount = 0;
 
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
@@ -135,15 +150,39 @@ void game(int time, int moduleUIDs[6]) {
             modules[i]->process(window, int(time - timer.getElapsedTime().asSeconds()));
         }
 
+        neutralizedCount = 0;
+        for (short i = 0; i < 6; i++) {
+            if (!modules[i]->getIsDone()) {
+                break;
+            } else {
+                neutralizedCount++;
+            }
+        }
+        if (neutralizedCount == 6) {
+            wining = true;
+            window->close();
+        }
+
+        if (time - timer.getElapsedTime().asSeconds() <= 0) {
+            window->close();
+        }
+
         for (short i = 0; i < 6; i++) {
             modules[i]->render(window);
         }
         display.render(window);
 
+        LSerial.render(window);
+
         window->display();
     }
     window->close();
     delete window;
+    if (wining) {
+        win(time - timer.getElapsedTime().asSeconds());
+    } else {
+        lose(neutralizedCount);
+    }
 }
 
 void startGame() {
