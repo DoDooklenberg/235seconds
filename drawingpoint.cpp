@@ -20,7 +20,7 @@ void DrawingPoint::setTarget(sf::Vector2f newTarget)
     target = newTarget;
     sf::Vector2f tempVec = target - position;
     if (tempVec.length() > radius) {
-        line.setSize({tempVec.length(), radius * 0.2f});
+        line.setSize({tempVec.length(), radius * 0.3f});
         line.setRotation(tempVec.angle());
         isActive = true;
     }
@@ -38,7 +38,7 @@ void DrawingPoint::setNext(DrawingPoint *newNext)
     target = next->getPosition();
     sf::Vector2f tempVec = target - position;
     if (tempVec.length() > radius) {
-        line.setSize({tempVec.length(), radius * 0.2f});
+        line.setSize({tempVec.length(), radius * 0.3f});
         line.setRotation(tempVec.angle());
         isActive = true;
     } else {
