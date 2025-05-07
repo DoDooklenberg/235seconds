@@ -122,14 +122,6 @@ void DrawingModule::process(sf::RenderWindow *window, int time)
 
 void DrawingModule::render(sf::RenderWindow *window)
 {
-    /*std::array vertices =
-        {
-         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.01f}},
-         sf::Vertex{{origin.x + side * 0.99f, origin.y + side * 0.01f}},
-         sf::Vertex{{origin.x + side * 0.99f, origin.y + side * 0.99f}},
-         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.99f}},
-         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.01f}},
-         };*/
     std::array vertices =
         {
          sf::Vertex{{origin.x, origin.y}},
