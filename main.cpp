@@ -41,7 +41,9 @@ void win(int time) {
     delete window;
 };
 
-void game(int time, int moduleUIDs[6]) {
+void lose(int neutralized) {} // Заглушка
+
+void game(int time, int moduleUIDs[6], int maxMistakes) {
     sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setVerticalSyncEnabled(true);
     float width = window->getSize().x;
@@ -54,8 +56,8 @@ void game(int time, int moduleUIDs[6]) {
     infoText.render(window);
     window->display();
 
-    Label display(font, "00:00", sf::Color::White, 50);
-    display.setPositionCenter({ width * 0.05f, height * 0.05f });
+    Label display(font, "00:00", sf::Color::White, height * 0.08f);
+    display.setPositionCenter({ width * 0.5f, height * 0.95f });
     std::string minutes, seconds;
     if (time % 60 < 10) {
         seconds = "0" + std::to_string(time % 60);
@@ -71,14 +73,32 @@ void game(int time, int moduleUIDs[6]) {
 
     sf::Clock timer;
 
+    char symbols[37]  = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    std::string serial;
+    for (int i = 0; i<3; i++) {
+        serial += symbols[rand()%(10)];
+    }
+    for (int i = 0; i<9; i++) {
+        serial += symbols[rand()%(37)];
+    }
+    Label LSerial(font, serial, sf::Color::White, height * 0.08f);
+    LSerial.setPositionCenter({width * 0.5f, height * 0.05f});
+
     BaseModule* modules[6];
 
     float moduleSide;
-    if (width * 2 <= height * 3) {
-        moduleSide = 0.3f * width;
+    if (width * 0.8f * 2 <= height * 0.8f * 3) {
+        moduleSide = 0.34f * width * 0.8f;
     } else {
-        moduleSide = 0.45f * height;
+        moduleSide = 0.51f * height * 0.8f;
     }
+    sf::RectangleShape statuses[6]{sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide))};
+    int mistakesCount[6]{0};
     sf::Vector2f origin;
     for (short i = 0; i < 6; i++) {
         origin = {width * 0.5f, height * 0.5f};
@@ -92,17 +112,41 @@ void game(int time, int moduleUIDs[6]) {
         } else {
             origin += {moduleSide * 0.5f, 0.f};
         }
+        statuses[i].setPosition(origin);
+        statuses[i].setFillColor(sf::Color::Transparent);
         switch (moduleUIDs[i]) {
         case 1:
-            modules[i] = new DrawingModule(origin, moduleSide, "", font);
+            modules[i] = new DrawingModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         default:
-            modules[i] = new BaseModule(origin, moduleSide, "", font);
+            modules[i] = new BaseModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         }
     }
+    origin = {width * 0.5f, height * 0.5f};
+    std::array border =
+        {
+         sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+         sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+         sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
+         sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
+         sf::Vertex{{origin.x  - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+         };
+
+    sf::CircleShape mistakes[maxMistakes];
+    int amtMistakes = 0;
+
+    for (short i = 0; i < maxMistakes; i++) {
+        mistakes[i] = sf::CircleShape(width * 0.04f);
+        mistakes[i].setFillColor(sf::Color::Transparent);
+        mistakes[i].setOutlineColor(sf::Color::White);
+        mistakes[i].setOutlineThickness(1.f);
+        mistakes[i].setPosition({width * 0.91f, height * 0.1f + width * 0.1f * i});
+    }
 
     timer.restart();
+    bool wining = false;
+    int neutralizedCount = 0;
 
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
@@ -118,6 +162,15 @@ void game(int time, int moduleUIDs[6]) {
         }
         window->clear(sf::Color::Black);
 
+        if (neutralizedCount == 6) {
+            wining = true;
+            window->close();
+        }
+
+        if (time - timer.getElapsedTime().asSeconds() <= 0 || amtMistakes > maxMistakes) {
+            window->close();
+        }
+
         if (seconds != std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60)) {
             if (int(time - timer.getElapsedTime().asSeconds()) % 60 < 10) {
                 seconds = "0" + std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60);
@@ -131,19 +184,48 @@ void game(int time, int moduleUIDs[6]) {
             }
             display.setString(minutes + ":" + seconds);
         }
+
+        amtMistakes = 0;
+        neutralizedCount = 0;
         for (short i = 0; i < 6; i++) {
             modules[i]->process(window, int(time - timer.getElapsedTime().asSeconds()));
+            amtMistakes += modules[i]->getMistakes();
+            if (modules[i]->getIsDone()) {
+                neutralizedCount++;
+                if (!modules[i]->getIsBase()) {
+                    statuses[i].setFillColor(sf::Color(0, 255, 0, 128));
+                }
+            } else if (modules[i]->getMistakes() != mistakesCount[i]) {
+                mistakesCount[i] = modules[i]->getMistakes();
+                statuses[i].setFillColor(sf::Color(255, 0, 0, 230));
+            } else {
+                statuses[i].setFillColor(sf::Color(255, 0, 0, std::make_unsigned_t<int>(statuses[i].getFillColor().a * 0.999f)));
+            }
         }
 
         for (short i = 0; i < 6; i++) {
             modules[i]->render(window);
+            window->draw(statuses[i]);
+            if (i < maxMistakes) {
+                if (i < amtMistakes) {
+                    mistakes[i].setFillColor(sf::Color::Red);
+                }
+                window->draw(mistakes[i]);
+            }
         }
         display.render(window);
+        LSerial.render(window);
+        window->draw(border.data(), border.size(), sf::PrimitiveType::LineStrip);
 
         window->display();
     }
     window->close();
     delete window;
+    if (wining) {
+        win(time - timer.getElapsedTime().asSeconds());
+    } else {
+        lose(neutralizedCount);
+    }
 }
 
 void startGame() {
@@ -180,8 +262,14 @@ void startGame() {
             } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>())
             {
                 if (startButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && activeButton != -1) {
+                    int haveModule[6]{0};
                     for (int i = 0; i < (activeButton + 1) * 2; i++) {
-                        m[i] = rand() % 1 + 1;
+                        int currentModule = rand() % 1 + 1;
+                        /*while (haveModule[currentModule]) {
+                            currentModule = rand() % 1 + 1;
+                        }*/ // TODO раскомментить когда модулей будет 6
+                        haveModule[currentModule] = 1;
+                        m[i] = currentModule;
                     }
                     for (int i = 0; i < 60; i++) {
                         buffer[0] = rand() % 6;
@@ -228,7 +316,7 @@ void startGame() {
     delete window;
 
     if (startGame) {
-        game(235, m);
+        game(235, m, (activeButton - 2) * -1);
     } else {
         main();
     }

@@ -1,5 +1,4 @@
 #include "drawingmodule.h"
-#include <iostream>
 
 
 DrawingModule::DrawingModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):
@@ -124,11 +123,11 @@ void DrawingModule::render(sf::RenderWindow *window)
 {
     std::array vertices =
         {
-         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.01f}},
-         sf::Vertex{{origin.x + side * 0.99f, origin.y + side * 0.01f}},
-         sf::Vertex{{origin.x + side * 0.99f, origin.y + side * 0.99f}},
-         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.99f}},
-         sf::Vertex{{origin.x + side * 0.01f, origin.y + side * 0.01f}},
+         sf::Vertex{{origin.x, origin.y}},
+         sf::Vertex{{origin.x + side, origin.y}},
+         sf::Vertex{{origin.x + side, origin.y + side}},
+         sf::Vertex{{origin.x, origin.y + side}},
+         sf::Vertex{{origin.x, origin.y}},
          };
 
     window->draw(vertices.data(), vertices.size(), sf::PrimitiveType::LineStrip);
