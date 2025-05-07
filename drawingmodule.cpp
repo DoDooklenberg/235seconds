@@ -1,5 +1,4 @@
 #include "drawingmodule.h"
-#include <iostream>
 
 
 DrawingModule::DrawingModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):

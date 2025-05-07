@@ -162,6 +162,15 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
         }
         window->clear(sf::Color::Black);
 
+        if (neutralizedCount == 6) {
+            wining = true;
+            window->close();
+        }
+
+        if (time - timer.getElapsedTime().asSeconds() <= 0 || amtMistakes > maxMistakes) {
+            window->close();
+        }
+
         if (seconds != std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60)) {
             if (int(time - timer.getElapsedTime().asSeconds()) % 60 < 10) {
                 seconds = "0" + std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60);
@@ -175,31 +184,14 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             }
             display.setString(minutes + ":" + seconds);
         }
-        for (short i = 0; i < 6; i++) {
-            modules[i]->process(window, int(time - timer.getElapsedTime().asSeconds()));
-        }
-
-        neutralizedCount = 0;
-        for (short i = 0; i < 6; i++) {
-            if (!modules[i]->getIsDone()) {
-                break;
-            } else {
-                neutralizedCount++;
-            }
-        }
-        if (neutralizedCount == 6) {
-            wining = true;
-            window->close();
-        }
-
-        if (time - timer.getElapsedTime().asSeconds() <= 0) {
-            window->close();
-        }
 
         amtMistakes = 0;
+        neutralizedCount = 0;
         for (short i = 0; i < 6; i++) {
+            modules[i]->process(window, int(time - timer.getElapsedTime().asSeconds()));
             amtMistakes += modules[i]->getMistakes();
             if (modules[i]->getIsDone()) {
+                neutralizedCount++;
                 if (!modules[i]->getIsBase()) {
                     statuses[i].setFillColor(sf::Color(0, 255, 0, 128));
                 }
@@ -211,35 +203,19 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             }
         }
 
-        if (amtMistakes > maxMistakes) {
-            window->close();
-        }
-
-        for (short i = 0; i < amtMistakes; i++) {
-            mistakes[i].setFillColor(sf::Color::Red);
-        }
-
-
-        for (short i = 0; i < 6; i++) {
-            modules[i]->getMistakes();
-        }
-
         for (short i = 0; i < 6; i++) {
             modules[i]->render(window);
+            window->draw(statuses[i]);
+            if (i < maxMistakes) {
+                if (i < amtMistakes) {
+                    mistakes[i].setFillColor(sf::Color::Red);
+                }
+                window->draw(mistakes[i]);
+            }
         }
         display.render(window);
-
         LSerial.render(window);
-
         window->draw(border.data(), border.size(), sf::PrimitiveType::LineStrip);
-
-        for (short i = 0; i < 6; i++) {
-            window->draw(statuses[i]);
-        }
-
-        for (short i = 0; i < maxMistakes; i++) {
-            window->draw(mistakes[i]);
-        }
 
         window->display();
     }
