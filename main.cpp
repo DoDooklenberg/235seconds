@@ -262,8 +262,14 @@ void startGame() {
             } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>())
             {
                 if (startButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && activeButton != -1) {
+                    int haveModule[6]{0};
                     for (int i = 0; i < (activeButton + 1) * 2; i++) {
-                        m[i] = rand() % 1 + 1;
+                        int currentModule = rand() % 1 + 1;
+                        /*while (haveModule[currentModule]) {
+                            currentModule = rand() % 1 + 1;
+                        }*/ // TODO раскомментить когда модулей будет 6
+                        haveModule[currentModule] = 1;
+                        m[i] = currentModule;
                     }
                     for (int i = 0; i < 60; i++) {
                         buffer[0] = rand() % 6;
