@@ -24,9 +24,15 @@ bool BaseModule::getIsDone()
     return isDone;
 }
 
+bool BaseModule::getIsBase()
+{
+    return isBase;
+}
+
 void BaseModule::process(sf::RenderWindow* window, int time)
 {
     isDone = true;
+    isBase = true;
 }
 
 void BaseModule::render(sf::RenderWindow *window)

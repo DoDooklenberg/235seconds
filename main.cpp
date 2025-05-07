@@ -92,6 +92,13 @@ void game(int time, int moduleUIDs[6]) {
     } else {
         moduleSide = 0.51f * height * 0.8f;
     }
+    sf::RectangleShape statuses[6]{sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide))};
+    int errors[6]{0};
     sf::Vector2f origin;
     for (short i = 0; i < 6; i++) {
         origin = {width * 0.5f, height * 0.5f};
@@ -105,15 +112,26 @@ void game(int time, int moduleUIDs[6]) {
         } else {
             origin += {moduleSide * 0.5f, 0.f};
         }
+        statuses[i].setPosition(origin);
+        statuses[i].setFillColor(sf::Color::Transparent);
         switch (moduleUIDs[i]) {
         case 1:
-            modules[i] = new DrawingModule(origin, moduleSide, serial, font);
+            modules[i] = new DrawingModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         default:
-            modules[i] = new BaseModule(origin, moduleSide, serial, font);
+            modules[i] = new BaseModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         }
     }
+    origin = {width * 0.5f, height * 0.5f};
+    std::array border =
+        {
+         sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+         sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+         sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
+         sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
+         sf::Vertex{{origin.x  - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+         };
 
     timer.restart();
     bool wining = false;
@@ -168,11 +186,30 @@ void game(int time, int moduleUIDs[6]) {
         }
 
         for (short i = 0; i < 6; i++) {
+            if (modules[i]->getIsDone()) {
+                if (!modules[i]->getIsBase()) {
+                    statuses[i].setFillColor(sf::Color(0, 255, 0, 128));
+                }
+            } else if (modules[i]->getMistakes() != errors[i]) {
+                errors[i] = modules[i]->getMistakes();
+                statuses[i].setFillColor(sf::Color(255, 0, 0, 230));
+            } else {
+                statuses[i].setFillColor(sf::Color(255, 0, 0, std::make_unsigned_t<int>(statuses[i].getFillColor().a * 0.999f)));
+            }
+        }
+
+        for (short i = 0; i < 6; i++) {
             modules[i]->render(window);
         }
         display.render(window);
 
         LSerial.render(window);
+
+        window->draw(border.data(), border.size(), sf::PrimitiveType::LineStrip);
+
+        for (short i = 0; i < 6; i++) {
+            window->draw(statuses[i]);
+        }
 
         window->display();
     }
