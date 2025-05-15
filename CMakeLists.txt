@@ -15,8 +15,8 @@ FetchContent_MakeAvailable(SFML)
 add_executable(main main.cpp
     label.h label.cpp
     basemodule.h basemodule.cpp
-    drawingmodule.h drawingmodule.cpp
-    drawingpoint.h drawingpoint.cpp
+    wiresmodule.cpp wiresmodule.h
+    drawwires.cpp drawwires.h
     button.h button.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)

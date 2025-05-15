@@ -106,7 +106,7 @@ void WiresModule::render(sf::RenderWindow *window)
                         }
                     }
             }
-        }ч
+        }
 
 
 

@@ -3,7 +3,7 @@
 #include "label.h"
 #include "button.h"
 #include "basemodule.h"
-#include "drawingmodule.h"
+#include "wiresmodule.h"
 
 #include <iostream>
 
@@ -93,7 +93,7 @@ void game(int time, int moduleUIDs[6]) {
         }
         switch (moduleUIDs[i]) {
         case 1:
-            modules[i] = new DrawingModule(origin, moduleSide, "", font);
+            modules[i] = new WiresModule(origin, moduleSide, "", font);
             break;
         default:
             modules[i] = new BaseModule(origin, moduleSide, "", font);
