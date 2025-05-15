@@ -7,6 +7,12 @@
 class LeverModule : public BaseModule
 {
 private:
+    sf::Clock ss;
+    int c = 0;
+    void randwin(); // игорок случайно выполняет модуль или нет
+    void startposition(); // задается начальное положение рычага
+    sf::RectangleShape base;
+    sf::RectangleShape base2;
     sf::CircleShape circle;
     sf::RectangleShape stick;
 public:
