@@ -8,6 +8,16 @@ WiresModule::WiresModule(sf::Vector2f newOrigin, float newSide, std::string newS
     BaseModule(newOrigin, newSide, newSerial, newFont)
 {
     generateWires();
+    setWireColors();
+}
+
+void WiresModule::setWireColors()
+{
+//    std::srand(std::time({}));
+//    int wireSeed = rand()%9;
+//    for (int i = 0; i < amountOfWires; i++){
+//        Wires.at(i).color = sf::Color::White;
+//    }
 }
 
 
@@ -69,54 +79,35 @@ void WiresModule::render(sf::RenderWindow *window)
     window->draw(vertices.data(), vertices.size(), sf::PrimitiveType::LineStrip);
 
 
-    //это я у вадима научился такие свитч-кейсы делать, потом изменю
-    switch (amountOfWires) {
-    case 1: {
-        sf::RectangleShape wire_1(Wires.at(0).pos_2);
-        wire_1.setPosition(Wires.at(0).pos_1);
-        if (Wires.at(0).wireIsCut == true) {wire_1.setFillColor(sf::Color::Black);}
-        window->draw(wire_1);
-        break;
-    }
-    case 2: {
-        sf::RectangleShape wire_1(Wires.at(0).pos_2);
-        wire_1.setPosition(Wires.at(0).pos_1);
-        window->draw(wire_1);
-        sf::RectangleShape wire_2(Wires.at(1).pos_2);
-        wire_2.setPosition(Wires.at(1).pos_1);
-        window->draw(wire_2);
-        break;
-    }
-    case 3: {
-        sf::RectangleShape wire_1(Wires.at(0).pos_2);
-        wire_1.setPosition(Wires.at(0).pos_1);
-        window->draw(wire_1);
-        sf::RectangleShape wire_2(Wires.at(1).pos_2);
-        wire_2.setPosition(Wires.at(1).pos_1);
-        window->draw(wire_2);
-        sf::RectangleShape wire_3(Wires.at(2).pos_2);
-        wire_3.setPosition(Wires.at(2).pos_1);
-        window->draw(wire_3);
-        break;
-    }
-    case 4: {
-        sf::RectangleShape wire_1(Wires.at(0).pos_2);
-        wire_1.setPosition(Wires.at(0).pos_1);
-        window->draw(wire_1);
-        sf::RectangleShape wire_2(Wires.at(1).pos_2);
-        wire_2.setPosition(Wires.at(1).pos_1);
-        window->draw(wire_2);
-        sf::RectangleShape wire_3(Wires.at(2).pos_2);
-        wire_3.setPosition(Wires.at(2).pos_1);
-        window->draw(wire_3);
-        sf::RectangleShape wire_4(Wires.at(3).pos_2);
-        wire_4.setPosition(Wires.at(3).pos_1);
-        window->draw(wire_4);
-        break;
-    }
-    deafault:
-        break;
-    }
+
+        if (amountOfWires >= 1) {
+            sf::RectangleShape wire_0(Wires.at(0).pos_2);
+            wire_0.setPosition(Wires.at(0).pos_1);
+            wire_0.setFillColor(Wires.at(0).color);
+            window->draw(wire_0);
+
+            if (amountOfWires >= 2) {
+                sf::RectangleShape wire_1(Wires.at(1).pos_2);
+                wire_1.setPosition(Wires.at(1).pos_1);
+                wire_1.setFillColor(Wires.at(1).color);
+                window->draw(wire_1);
+
+                    if (amountOfWires >= 3) {
+                        sf::RectangleShape wire_2(Wires.at(2).pos_2);
+                        wire_2.setPosition(Wires.at(2).pos_1);
+                        wire_2.setFillColor(Wires.at(2).color);
+                        window->draw(wire_2);
+
+                        if (amountOfWires >= 4) {
+                            sf::RectangleShape wire_3(Wires.at(3).pos_2);
+                            wire_3.setPosition(Wires.at(3).pos_1);
+                            wire_3.setFillColor(Wires.at(3).color);
+                            window->draw(wire_3);
+                        }
+                    }
+            }
+        }ч
+
 
 
 
