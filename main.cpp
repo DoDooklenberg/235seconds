@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <vector>
 #include "label.h"
 #include "button.h"
 #include "basemodule.h"
@@ -137,15 +138,15 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
          sf::Vertex{{origin.x  - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
          };
 
-    sf::CircleShape mistakes[maxMistakes];
+    std::vector<sf::CircleShape> mistakes;
     int amtMistakes = 0;
 
     for (short i = 0; i < maxMistakes; i++) {
-        mistakes[i] = sf::CircleShape(width * 0.04f);
-        mistakes[i].setFillColor(sf::Color::Transparent);
-        mistakes[i].setOutlineColor(sf::Color::White);
-        mistakes[i].setOutlineThickness(1.f);
-        mistakes[i].setPosition({width * 0.91f, height * 0.1f + width * 0.1f * i});
+        mistakes.push_back(sf::CircleShape(width * 0.04f));
+        mistakes.at(i).setFillColor(sf::Color::Transparent);
+        mistakes.at(i).setOutlineColor(sf::Color::White);
+        mistakes.at(i).setOutlineThickness(1.f);
+        mistakes.at(i).setPosition({width * 0.91f, height * 0.1f + width * 0.1f * i});
     }
 
     timer.restart();
@@ -212,9 +213,9 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             window->draw(statuses[i]);
             if (i < maxMistakes) {
                 if (i < amtMistakes) {
-                    mistakes[i].setFillColor(sf::Color::Red);
+                    mistakes.at(i).setFillColor(sf::Color::Red);
                 }
-                window->draw(mistakes[i]);
+                window->draw(mistakes.at(i));
             }
         }
         display.render(window);
