@@ -4,6 +4,7 @@
 #include "button.h"
 #include "basemodule.h"
 #include "drawingmodule.h"
+#include "wiresmodule.h"
 
 const sf::Font font("font.ttf");
 
@@ -117,6 +118,9 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
         switch (moduleUIDs[i]) {
         case 1:
             modules[i] = new DrawingModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
+            break;
+        case 2:
+            modules[i] = new WiresModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         default:
             modules[i] = new BaseModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
@@ -235,7 +239,7 @@ void startGame() {
     float height = window->getSize().y;
     float uSize = (width + height) / 2;
     window->setFramerateLimit(60);
-    int m[6], buffer[2];
+    int m[6]{0}, buffer[2]{0};
     bool startGame = false;
     int activeButton = -1;
 
@@ -262,7 +266,7 @@ void startGame() {
             } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>())
             {
                 if (startButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && activeButton != -1) {
-                    int haveModule[6]{0};
+                    int haveModule[6]{6};
                     for (int i = 0; i < (activeButton + 1) * 2; i++) {
                         int currentModule = rand() % 1 + 1;
                         /*while (haveModule[currentModule]) {
@@ -316,6 +320,7 @@ void startGame() {
     delete window;
 
     if (startGame) {
+        m[0] = 2;
         game(235, m, (activeButton - 2) * -1);
     } else {
         main();

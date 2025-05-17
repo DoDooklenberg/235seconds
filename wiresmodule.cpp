@@ -10,20 +10,74 @@ WiresModule::WiresModule(sf::Vector2f newOrigin, float newSide, std::string newS
     generateWires();
     setWireColors();
 }
+sf::Color WiresModule::getRandomColor()
+{
+    int wireColor = rand() % 7;
+    switch (wireColor) {
+    case 0:
+        return sf::Color::Red;
+        break;
+    case 1:
+        //оранжевый
+        return sf::Color(255, 165, 0);
+        break;
+    case 2:
+        return sf::Color::Yellow;
+        break;
+    case 3:
+        return sf::Color::Green;
+        break;
+    case 4:
+        return sf::Color::Blue;
+        break;
+    case 5:
+        //синий
+        return sf::Color(75, 0, 130);
+        break;
+    case 6:
+        //фиолетовый
+        return sf::Color(127,0,255);
+        break;
+    default:
+        return sf::Color::White;
+        break;
+    }
+}
 
 void WiresModule::setWireColors()
 {
-//    std::srand(std::time({}));
 //    int wireSeed = rand()%9;
 //    for (int i = 0; i < amountOfWires; i++){
 //        Wires.at(i).color = sf::Color::White;
 //    }
+    switch (amountOfWires) {
+        case 1:
+            for (int i = 0; i < amountOfWires; i++){
+                Wires.at(i).color = getRandomColor();
+            }
+            break;
+        case 2:
+            for (int i = 0; i < amountOfWires; i++){
+                Wires.at(i).color = getRandomColor();
+            }
+            break;
+    case 3:
+        for (int i = 0; i < amountOfWires; i++){
+            Wires.at(i).color = getRandomColor();
+        }
+        break;
+
+    case 4:
+        for (int i = 0; i < amountOfWires; i++){
+            Wires.at(i).color = getRandomColor();
+        }
+        break;
+    }
 }
 
 
 void WiresModule::generateWires()
 {
-    std::srand(std::time({}));
     amountOfWires = rand()%4 + 1;
     int step = 0;
     for (int i = 0; i < amountOfWires; i++) {

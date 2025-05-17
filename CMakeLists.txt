@@ -17,6 +17,9 @@ add_executable(main main.cpp
     basemodule.h basemodule.cpp
     wiresmodule.cpp wiresmodule.h
     drawwires.cpp drawwires.h
-    button.h button.cpp)
+    button.h button.cpp
+    drawingmodule.cpp drawingmodule.h
+    drawingpoint.cpp drawingpoint.h)
+
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)
