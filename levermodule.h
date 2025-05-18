@@ -7,10 +7,11 @@
 class LeverModule : public BaseModule
 {
 private:
-    sf::Clock ss;
-    int c = 0;
-    void randwin(); // игорок случайно выполняет модуль или нет
-    void startposition(); // задается начальное положение рычага
+    int localTime; //для возвращения рычага
+    void randWin(); // игорок случайно выполняет модуль или нет
+    void startPosition(); // задается начальное положение рычага
+    bool isPrimeNumber(int num); // проверяет является ли число простым
+    int serialSum(); // возвращает сумму цифр серийного номера
     sf::RectangleShape base;
     sf::RectangleShape base2;
     sf::CircleShape circle;

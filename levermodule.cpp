@@ -1,12 +1,11 @@
 #include "levermodule.h"
 
-
-void LeverModule::randwin()
+void LeverModule::randWin() // случайная победа
 {
-    //if(arc4random() % 2 == 0)
-    if(c % 2 == 0)
+
+    if(rand() % 2 == 0)
     {
-        mistakes += 1;
+        ++mistakes;
     }
     else
     {
@@ -14,7 +13,7 @@ void LeverModule::randwin()
     }
 }
 
-void LeverModule::startposition()
+void LeverModule::startPosition() // рычаг в верхнем положение
 {
     circle.setRadius(side * 0.065f);
     circle.setOrigin(circle.getGeometricCenter());
@@ -25,11 +24,49 @@ void LeverModule::startposition()
     stick.setPosition(circle.getPosition());
 }
 
-LeverModule::LeverModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont) : BaseModule(newOrigin, newSide, newSerial, newFont)
+bool LeverModule::isPrimeNumber(int num) // проверяет является ли число простым
 {
-    startposition();
+    for (int i = 2; i < num; i++)
+    {
+        if (num % i == 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
 
-    base.setSize({0.2f * side, 0.3f * side});
+int LeverModule::serialSum() // сумма цифр серийного номера
+{
+    int counter = 0;
+    for (auto i = serial.begin(); i != serial.end(); i++)
+    {
+        for (char num : "123456789")
+        {
+            if (*i == num)
+            {
+                counter += std::stoi(&num);
+            }
+        }
+    }
+    return counter;
+}
+
+LeverModule::LeverModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont) :
+    BaseModule(newOrigin, newSide, newSerial, newFont)
+{
+    startPosition();
+
+    if (rand() % 2 == 0) // случайный цвет рычага
+    {
+        circle.setFillColor(sf::Color::Red);
+    }
+    else
+    {
+        circle.setFillColor(sf::Color::Blue);
+    }
+
+    base.setSize({0.2f * side, 0.3f * side}); // крепление рычага
     base.setOrigin(base.getGeometricCenter());
     base.setPosition(origin + sf::Vector2(side / 2.0f, side / 4.0f + stick.getSize().y));
     base.setFillColor(sf::Color::Black);
@@ -43,26 +80,87 @@ LeverModule::LeverModule(sf::Vector2f newOrigin, float newSide, std::string newS
 void LeverModule::process(sf::RenderWindow *window, int time)
 {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) // рычаг нажат
-        && sf::Mouse::getPosition(* window).x > circle.getPosition().x - circle.getRadius() && sf::Mouse::getPosition(* window).x < circle.getPosition().x + circle.getRadius()
-        && sf::Mouse::getPosition(* window).y > stick.getPosition().y - circle.getRadius() && sf::Mouse::getPosition(* window).y < stick.getPosition().y + stick.getSize().y)
+        && sf::Mouse::getPosition(* window).x > circle.getPosition().x - circle.getRadius()
+        && sf::Mouse::getPosition(* window).x < circle.getPosition().x + circle.getRadius()
+        && sf::Mouse::getPosition(* window).y > stick.getPosition().y - circle.getRadius()
+        && sf::Mouse::getPosition(* window).y < stick.getPosition().y + stick.getSize().y)
     {
-        if (isDone == false && circle.getPosition() == stick.getPosition()) // рычаг опускается
+        if (isDone == false && circle.getPosition() == stick.getPosition())
         {
-                stick.setPosition(stick.getPosition() + sf::Vector2(0.f, stick.getSize().y));
-                circle.setPosition(stick.getPosition() + sf::Vector2(0.f, stick.getSize().y));
-                randwin();
+            stick.setPosition(stick.getPosition() + sf::Vector2(0.f, stick.getSize().y)); // рычаг опускается
+            circle.setPosition(stick.getPosition() + sf::Vector2(0.f, stick.getSize().y));
+
+            localTime = time;
+
+            auto check{[&](bool expression){if(expression){isDone = true;} else randWin();}};
+
+            char firstNum = serial[0];
+
+            if (isPrimeNumber(serialSum())) // правила тажатия
+            {
+                if (std::stoi(&firstNum) % 2 == 0)
+                {
+                    if (circle.getFillColor() == sf::Color::Blue)
+                    {
+                        if (serialSum() >= 11)
+                        {
+                            check(time - 60 * (time / 60) >= 30 && time - 60 * (time / 60) <= 32);
+                        }
+                        else
+                        {
+                            check(time - 60 * (time / 60) == 11);
+                        }
+                    }
+                    else
+                    {
+                        check(time % 2 == 0);
+                    }
+                }
+                else
+                {
+                    if (circle.getFillColor() == sf::Color::Blue)
+                    {
+                        check(!(time >= 125 && time <= 179));
+                    }
+                    else
+                    {
+                        if (std::stoi(&firstNum) > 6)
+                        {
+                            check(time % 10 == 1);
+                        }
+                        else
+                        {
+                            check(time == 120);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (std::stoi(&firstNum) % 2 == 0)
+                {
+                    check(time == 17);
+                }
+                else
+                {
+                    if (circle.getFillColor() == sf::Color::Red)
+                    {
+                            check(time % 10 != 0);
+                    }
+                    else
+                    {
+                        check(true);
+                    }
+                }
+            }
         }
     }
+
     if(isDone == false && circle.getPosition() != stick.getPosition()) // рычаг возвращается после нажатия
     {
-        if(!ss.isRunning())
+        if(localTime - time >= 2)
         {
-            ss.start();
-        }
-        if(ss.getElapsedTime().asSeconds() < 1.83f && ss.getElapsedTime().asSeconds() > 1.8f)
-        {
-            startposition();
-            ss.reset();
+            startPosition();
         }
     }
 }
