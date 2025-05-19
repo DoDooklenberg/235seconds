@@ -8,11 +8,12 @@
 class DrawWires
 {
 public:
-    DrawWires(sf::Vector2f pos_1, sf::Vector2f pos_2, sf::Color color, bool wireIsCut);
+    DrawWires(sf::Vector2f pos_1, sf::Vector2f pos_2, sf::Color color, bool wireIsCut, bool isCorrect);
     sf::Vector2f pos_1;
     sf::Vector2f pos_2;
     sf::Color color;
     bool wireIsCut = 0;
+    bool isCorrect = 0;
 private:
 
 };

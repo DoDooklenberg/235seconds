@@ -11,6 +11,7 @@ class WiresModule : public BaseModule {
 private:
     std::vector<DrawWires> Wires;
     sf::Color getRandomColor();
+    void getCorrectWires();
 public:
     int mouseOnWire = 0;
     WiresModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);

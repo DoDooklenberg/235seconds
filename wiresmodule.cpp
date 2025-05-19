@@ -2,41 +2,56 @@
 #include <iostream>
 #include "basemodule.h"
 #include <vector>
-#include <iostream>
 
 WiresModule::WiresModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):
     BaseModule(newOrigin, newSide, newSerial, newFont)
 {
     generateWires();
+    getCorrectWires();
     setWireColors();
+}
+
+void WiresModule::getCorrectWires()
+{
+
+    switch (amountOfWires) {
+    //при двух проводах правильный провод зависит от остатка от деления на 2 суммы всех цифр серийника. 0 - 1-ый провод, 1 - 2-ой провод
+    case 2: {
+        int sum = 0;
+        for (char ch : serial) {
+                if (isdigit(ch)) {
+                    sum += int(ch - '0');
+                }
+            }
+
+        Wires.at(sum % 2).isCorrect = true;
+        break;
+    }
+    case 3:
+        break;
+    default:
+
+        break;
+    }
 }
 sf::Color WiresModule::getRandomColor()
 {
-    int wireColor = rand() % 7;
+    int wireColor = rand() % 5;
     switch (wireColor) {
     case 0:
         return sf::Color::Red;
         break;
     case 1:
-        //оранжевый
-        return sf::Color(255, 165, 0);
-        break;
-    case 2:
         return sf::Color::Yellow;
         break;
-    case 3:
+    case 2:
         return sf::Color::Green;
         break;
-    case 4:
+    case 3:
         return sf::Color::Blue;
         break;
-    case 5:
-        //синий
-        return sf::Color(75, 0, 130);
-        break;
-    case 6:
-        //фиолетовый
-        return sf::Color(127,0,255);
+    case 4:
+        return sf::Color::Cyan;
         break;
     default:
         return sf::Color::White;
@@ -46,42 +61,36 @@ sf::Color WiresModule::getRandomColor()
 
 void WiresModule::setWireColors()
 {
-//    int wireSeed = rand()%9;
-//    for (int i = 0; i < amountOfWires; i++){
-//        Wires.at(i).color = sf::Color::White;
-//    }
+
     switch (amountOfWires) {
-        case 1:
-            for (int i = 0; i < amountOfWires; i++){
-                Wires.at(i).color = getRandomColor();
-            }
-            break;
         case 2:
             for (int i = 0; i < amountOfWires; i++){
                 Wires.at(i).color = getRandomColor();
             }
             break;
-    case 3:
-        for (int i = 0; i < amountOfWires; i++){
-            Wires.at(i).color = getRandomColor();
-        }
-        break;
-
-    case 4:
-        for (int i = 0; i < amountOfWires; i++){
-            Wires.at(i).color = getRandomColor();
-        }
-        break;
+        case 3:
+            for (int i = 0; i < amountOfWires; i++){
+                Wires.at(i).color = getRandomColor();
+            }
+            break;
+        case 4:
+            for (int i = 0; i < amountOfWires; i++){
+                Wires.at(i).color = getRandomColor();
+            }
+            break;
+        default:
+            break;
     }
 }
 
 
 void WiresModule::generateWires()
 {
-    amountOfWires = rand()%4 + 1;
+    amountOfWires = 3/*rand()%3 + 2*/;
     int step = 0;
     for (int i = 0; i < amountOfWires; i++) {
-        Wires.push_back(DrawWires(origin + sf::Vector2f(side/3, side/(amountOfWires + 1) + step), sf::Vector2f(side/3, 15.f), sf::Color::White, false));
+        Wires.push_back(DrawWires(origin + sf::Vector2f(side/3, side/(amountOfWires + 1) + step),
+        sf::Vector2f(side/3, 15.f), sf::Color::White, false, false));
         step += 30;
     }
 
@@ -102,20 +111,31 @@ bool WiresModule::WiresPosCheck(sf::Vector2f cursor)
 }
 void WiresModule::process(sf::RenderWindow *window, int time)
 {
-    const auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Arrow).value();
-    window->setMouseCursor(cursor);
-    std::cout << mouseOnWire;
+    if (isDone == false) {
+        const auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Arrow).value();
+        window->setMouseCursor(cursor);
 
-        if (WiresPosCheck(sf::Vector2f(sf::Mouse::getPosition()))) {
-            if (Wires.at(mouseOnWire).wireIsCut == false) {
-                const auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Hand).value();
-                window->setMouseCursor(cursor);
+            if (WiresPosCheck(sf::Vector2f(sf::Mouse::getPosition()))) {
+                if (Wires.at(mouseOnWire).wireIsCut == false) {
+                    const auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Hand).value();
+                    window->setMouseCursor(cursor);
 
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-                    Wires.at(mouseOnWire).wireIsCut = true;
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+                        const auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Arrow).value();
+                        window->setMouseCursor(cursor);
+                        Wires.at(mouseOnWire).wireIsCut = true;
+                            if (Wires.at(mouseOnWire).isCorrect == true) {
+                                isDone = true;
+                            }
+                            else {
+                                mistakes++;
+                            }
+                    }
                 }
             }
-        }
+    }
+
+
 }
 
 void WiresModule::render(sf::RenderWindow *window)
