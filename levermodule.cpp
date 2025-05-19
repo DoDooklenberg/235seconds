@@ -2,7 +2,6 @@
 
 void LeverModule::randWin() // случайная победа
 {
-
     if(rand() % 2 == 0)
     {
         ++mistakes;
@@ -39,20 +38,17 @@ bool LeverModule::isPrimeNumber(int num) // проверяет является 
 int LeverModule::serialSum() // сумма цифр серийного номера
 {
     int counter = 0;
-    for (auto i = serial.begin(); i != serial.end(); i++)
+    for (char num : serial)
     {
-        for (char num : "123456789")
+        if (isdigit(num))
         {
-            if (*i == num)
-            {
-                counter += std::stoi(&num);
-            }
+            counter += int(num - '0');
         }
     }
     return counter;
 }
 
-LeverModule::LeverModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont) :
+LeverModule::LeverModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):
     BaseModule(newOrigin, newSide, newSerial, newFont)
 {
     startPosition();
