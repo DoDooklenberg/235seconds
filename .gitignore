@@ -5,3 +5,4 @@ out
 .vs
 .vscode
 CMakeLists.txt.user
+.DS_Store
