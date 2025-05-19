@@ -92,9 +92,9 @@ void LeverModule::process(sf::RenderWindow *window, int time)
 
             char firstNum = serial[0];
 
-            if (isPrimeNumber(serialSum())) // правила тажатия
+            if (isPrimeNumber(serialSum())) // правила нажатия
             {
-                if (std::stoi(&firstNum) % 2 == 0)
+                if (int(firstNum - '0') % 2 == 0)
                 {
                     if (circle.getFillColor() == sf::Color::Blue)
                     {
@@ -120,7 +120,7 @@ void LeverModule::process(sf::RenderWindow *window, int time)
                     }
                     else
                     {
-                        if (std::stoi(&firstNum) > 6)
+                        if (int(firstNum - '0') > 6)
                         {
                             check(time % 10 == 1);
                         }
@@ -133,7 +133,7 @@ void LeverModule::process(sf::RenderWindow *window, int time)
             }
             else
             {
-                if (std::stoi(&firstNum) % 2 == 0)
+                if (int(firstNum - '0') % 2 == 0)
                 {
                     check(time == 17);
                 }
@@ -141,7 +141,7 @@ void LeverModule::process(sf::RenderWindow *window, int time)
                 {
                     if (circle.getFillColor() == sf::Color::Red)
                     {
-                            check(time % 10 != 0);
+                        check(time % 10 != 0);
                     }
                     else
                     {
