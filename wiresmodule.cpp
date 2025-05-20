@@ -7,32 +7,117 @@ WiresModule::WiresModule(sf::Vector2f newOrigin, float newSide, std::string newS
     BaseModule(newOrigin, newSide, newSerial, newFont)
 {
     generateWires();
-    getCorrectWires();
-    setWireColors();
+    setCorrectWires();
 }
 
-void WiresModule::getCorrectWires()
+void WiresModule::setCorrectWires()
 {
 
     switch (amountOfWires) {
     //при двух проводах правильный провод зависит от остатка от деления на 2 суммы всех цифр серийника. 0 - 1-ый провод, 1 - 2-ой провод
+    //но если кол-во цифр серийника больше 5 - то провода меняются местами
     case 2: {
         int sum = 0;
+        int cnt = 0;
+        for (char ch : serial) {
+                if (isdigit(ch)) {
+                    cnt++;
+                }
+        }
+        if (cnt > 5) {
+            for (char ch : serial) {
+                    if (isdigit(ch)) {
+                        sum += int(ch - '0');
+                    }
+                }
+            if (sum % 2 == 1) {Wires.at(0).isCorrect = true;}
+            else {Wires.at(1).isCorrect = true;}
+        }
+        else {
         for (char ch : serial) {
                 if (isdigit(ch)) {
                     sum += int(ch - '0');
                 }
             }
-
         Wires.at(sum % 2).isCorrect = true;
+        }
         break;
     }
-    case 3:
-        break;
-    default:
+    //при трёх проводах - находится по формуле: остакток от деления на 4 от (количество букв серийеика) * 2 + (количество цифр серийника) * 3
+    // + (сумма кодов цвета проводов: красный - 0, жёлтый - 31, зелёный - 1,синий - 52, бирюзоый - 13)
+    case 3: {
+        int lettersCount = 0;
+        int numbersCount = 0;
+        int colorCodeSum = 0;
 
+        for (char ch : serial) {
+                if (isdigit(ch)) {numbersCount++;}
+                else {lettersCount++;}
+            }
+        for (int i = 0; i < 3; i++) {
+            if (Wires.at(i).color == sf::Color::Red) {colorCodeSum += 0;}
+            if (Wires.at(i).color == sf::Color::Yellow) {colorCodeSum += 31;}
+            if (Wires.at(i).color == sf::Color::Green) {colorCodeSum += 1;}
+            if (Wires.at(i).color == sf::Color::Blue) {colorCodeSum += 52;}
+            if (Wires.at(i).color == sf::Color::Cyan) {colorCodeSum += 13;}
+        }
+        Wires.at((lettersCount * 2 + numbersCount * 3 + colorCodeSum) % 4).isCorrect = true;
         break;
     }
+    //при четырёх проводах читать ниже
+    case 4: {
+        int maxSum = 0;
+        int curSum = 0;
+        sf::Color mostUsedColor;
+
+        for (int i = 0; i < amountOfWires; i++) {
+            for (int j = 0; j < amountOfWires; j++) {
+                if (Wires.at(i).color == Wires.at(j).color) {
+                    curSum++;
+                }
+        }
+            if (curSum >= maxSum) {
+                mostUsedColor = Wires.at(i).color;
+                maxSum = curSum;
+            }
+            curSum = 0;
+        }
+
+        switch (maxSum) {
+        //при четырёх разных проводах - резать первый и четвёртый
+        case 1:
+            Wires.at(0).isCorrect = true;
+            Wires.at(3).isCorrect = true;
+            break;
+        //при двух одинакоых проводах - резать два разного цвета,
+        //если две пары по два цвета - резать два провода чей цвет встречается НЕ последним (а ловко я это придумал)
+        case 2:
+            for (int i = 0; i < 4; i++) {
+                if (Wires.at(i).color != mostUsedColor) {
+                    Wires.at(i).isCorrect = true;
+                }
+            }
+            break;
+        //при трёх проводах одинакового цвета - резать первый провод самого часто-встречающегося цвета и последний
+        case 3:
+            for (int i = 0; i < 4; i++) {
+                if (Wires.at(i).color == mostUsedColor) {
+                    Wires.at(i).isCorrect = true;
+                    i++;
+                }
+            }
+            break;
+        //при четырёх проводах одинакогового цвета - резать третий и второй
+        case 4:
+            Wires.at(1).isCorrect = true;
+            Wires.at(2).isCorrect = true;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
 }
 sf::Color WiresModule::getRandomColor()
 {
@@ -59,29 +144,6 @@ sf::Color WiresModule::getRandomColor()
     }
 }
 
-void WiresModule::setWireColors()
-{
-
-    switch (amountOfWires) {
-        case 2:
-            for (int i = 0; i < amountOfWires; i++){
-                Wires.at(i).color = getRandomColor();
-            }
-            break;
-        case 3:
-            for (int i = 0; i < amountOfWires; i++){
-                Wires.at(i).color = getRandomColor();
-            }
-            break;
-        case 4:
-            for (int i = 0; i < amountOfWires; i++){
-                Wires.at(i).color = getRandomColor();
-            }
-            break;
-        default:
-            break;
-    }
-}
 
 
 void WiresModule::generateWires()
@@ -90,7 +152,7 @@ void WiresModule::generateWires()
     int step = 0;
     for (int i = 0; i < amountOfWires; i++) {
         Wires.push_back(DrawWires(origin + sf::Vector2f(side/3, side/(amountOfWires + 1) + step),
-        sf::Vector2f(side/3, 15.f), sf::Color::White, false, false));
+        sf::Vector2f(side/3, 15.f), getRandomColor(), false, false));
         step += 30;
     }
 
@@ -125,7 +187,7 @@ void WiresModule::process(sf::RenderWindow *window, int time)
                         window->setMouseCursor(cursor);
                         Wires.at(mouseOnWire).wireIsCut = true;
                             if (Wires.at(mouseOnWire).isCorrect == true) {
-                                isDone = true;
+                                correctWireCut++;
                             }
                             else {
                                 mistakes++;
@@ -133,6 +195,27 @@ void WiresModule::process(sf::RenderWindow *window, int time)
                     }
                 }
             }
+    }
+
+    switch (amountOfWires) {
+    case 2:
+        if (correctWireCut == 1) {
+            isDone = 1;
+        }
+        break;
+    case 3:
+        if (correctWireCut == 1){
+            isDone = 1;
+        }
+        break;
+    case 4:
+        if (correctWireCut == 2) {
+            isDone = 1;
+        }
+        break;
+    default:
+        isDone = 1;
+        break;
     }
 
 
@@ -152,11 +235,13 @@ void WiresModule::render(sf::RenderWindow *window)
 
     window->draw(vertices.data(), vertices.size(), sf::PrimitiveType::LineStrip);
 
+    sf::Texture wireTexture("WireSprite_1.png");
 
 
         if (amountOfWires >= 1) {
             sf::RectangleShape wire_0(Wires.at(0).pos_2);
             wire_0.setPosition(Wires.at(0).pos_1);
+            wire_0.setTexture(&wireTexture);
             wire_0.setFillColor(Wires.at(0).color);
             window->draw(wire_0);
 
