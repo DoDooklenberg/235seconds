@@ -2,13 +2,13 @@
 
 void LeverModule::randWin() // случайная победа
 {
-    if(rand() % 2 == 0)
+    if(rand() % 4 == 1)
     {
-        ++mistakes;
+        isDone = true;
     }
     else
     {
-        isDone = true;
+        ++mistakes;
     }
 }
 
@@ -16,7 +16,7 @@ void LeverModule::startPosition() // рычаг в верхнем положен
 {
     circle.setRadius(side * 0.065f);
     circle.setOrigin(circle.getGeometricCenter());
-    circle.setPosition(origin + sf::Vector2(side / 2.0f, side / 4.0f));
+    circle.setPosition(origin + sf::Vector2f(side / 2.0f, side / 4.0f));
 
     stick.setSize({side * 0.02f, side * 0.3f});
     stick.setOrigin({stick.getSize().x / 2.f, 0.f});
@@ -64,7 +64,7 @@ LeverModule::LeverModule(sf::Vector2f newOrigin, float newSide, std::string newS
 
     base.setSize({0.2f * side, 0.3f * side}); // крепление рычага
     base.setOrigin(base.getGeometricCenter());
-    base.setPosition(origin + sf::Vector2(side / 2.0f, side / 4.0f + stick.getSize().y));
+    base.setPosition(origin + sf::Vector2f(side / 2.0f, side / 4.0f + stick.getSize().y));
     base.setFillColor(sf::Color::Black);
     base.setOutlineThickness(side * 0.01f);
 
@@ -83,8 +83,8 @@ void LeverModule::process(sf::RenderWindow *window, int time)
     {
         if (isDone == false && circle.getPosition() == stick.getPosition())
         {
-            stick.setPosition(stick.getPosition() + sf::Vector2(0.f, stick.getSize().y)); // рычаг опускается
-            circle.setPosition(stick.getPosition() + sf::Vector2(0.f, stick.getSize().y));
+            stick.setPosition(stick.getPosition() + sf::Vector2f(0.f, stick.getSize().y)); // рычаг опускается
+            circle.setPosition(stick.getPosition() + sf::Vector2f(0.f, stick.getSize().y));
 
             localTime = time;
 
@@ -109,14 +109,14 @@ void LeverModule::process(sf::RenderWindow *window, int time)
                     }
                     else
                     {
-                        check(time % 2 == 0);
+                        check(time % 2 == 0 && time - 60 * (time / 60) > 27);
                     }
                 }
                 else
                 {
                     if (circle.getFillColor() == sf::Color::Blue)
                     {
-                        check(!(time >= 125 && time <= 179));
+                        check(!(time >= 65 && time <= 219));
                     }
                     else
                     {
@@ -141,7 +141,7 @@ void LeverModule::process(sf::RenderWindow *window, int time)
                 {
                     if (circle.getFillColor() == sf::Color::Red)
                     {
-                        check(time % 10 != 0);
+                        check(time % 10 != 0 && time / 60 < 3);
                     }
                     else
                     {
