@@ -45,6 +45,7 @@ void WiresModule::setCorrectWires()
     }
     //при трёх проводах - находится по формуле: остакток от деления на 4 от (количество букв серийеика) * 2 + (количество цифр серийника) * 3
     // + (сумма кодов цвета проводов: красный - 0, жёлтый - 31, зелёный - 1,синий - 52, бирюзоый - 13)
+    // 0 - первый провод, 1 - второй, 2 - третий
     case 3: {
         int lettersCount = 0;
         int numbersCount = 0;
@@ -61,7 +62,7 @@ void WiresModule::setCorrectWires()
             if (Wires.at(i).color == sf::Color::Blue) {colorCodeSum += 52;}
             if (Wires.at(i).color == sf::Color::Cyan) {colorCodeSum += 13;}
         }
-        Wires.at((lettersCount * 2 + numbersCount * 3 + colorCodeSum) % 4).isCorrect = true;
+        Wires.at((lettersCount * 2 + numbersCount * 3 + colorCodeSum) % 3).isCorrect = true;
         break;
     }
     //при четырёх проводах читать ниже
@@ -111,6 +112,7 @@ void WiresModule::setCorrectWires()
         case 4:
             Wires.at(1).isCorrect = true;
             Wires.at(2).isCorrect = true;
+            break;
         }
         break;
     }
@@ -148,7 +150,7 @@ sf::Color WiresModule::getRandomColor()
 
 void WiresModule::generateWires()
 {
-    amountOfWires = 3/*rand()%3 + 2*/;
+    amountOfWires = rand()%3+2;
     int step = 0;
     for (int i = 0; i < amountOfWires; i++) {
         Wires.push_back(DrawWires(origin + sf::Vector2f(side/3, side/(amountOfWires + 1) + step),
