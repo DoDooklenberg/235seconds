@@ -1,6 +1,22 @@
 #include "particlesystem.h"
 
 
+ParticleSystem::ParticleSystem(unsigned int count) : m_particles(count), m_vertices(sf::PrimitiveType::Points, count)
+{
+    for (std::size_t i = 0; i < m_particles.size(); ++i)
+    {
+        static std::random_device rd;
+        static std::mt19937       rng(rd());
+
+        const sf::Angle angle       = sf::radians(0.f);
+        const float     speed       = 0;
+        m_particles[i].velocity = sf::Vector2f(speed, angle);
+        m_particles[i].lifetime = sf::milliseconds(std::uniform_int_distribution(1000, 3000)(rng));
+
+        m_vertices[i].position = m_emitter;
+    }
+}
+
 void ParticleSystem::setEmitter(sf::Vector2f position)
 {
     m_emitter = position;

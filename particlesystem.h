@@ -7,9 +7,7 @@
 class ParticleSystem : public sf::Drawable, public sf::Transformable
 {
 public:
-    ParticleSystem(unsigned int count) : m_particles(count), m_vertices(sf::PrimitiveType::Points, count)
-    {
-    }
+    ParticleSystem(unsigned int count);
 
     void setEmitter(sf::Vector2f position);
 

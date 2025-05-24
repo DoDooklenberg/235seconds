@@ -241,6 +241,10 @@ void startGame() {
     bool startGame = false;
     int activeButton = -1;
 
+    ParticleSystem particles(7000);
+
+    sf::Clock clock;
+
     sf::RectangleShape* buttons[3]{new sf::RectangleShape{{width * 0.4f, height * 0.1f}},
                                    new sf::RectangleShape{{width * 0.4f, height * 0.1f}},
                                    new sf::RectangleShape{{width * 0.4f, height * 0.1f}}};
@@ -252,7 +256,7 @@ void startGame() {
     buttons[2]->setFillColor(sf::Color::Transparent);
 
     Button startButton{{font, "Начать", sf::Color::White}, {width * 0.55f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color(80, 80, 80)},
-        exitButton{{font, "Выход", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
+        exitButton{{font, "Назад", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
         easyButton{{font, "Легкий", sf::Color::White}, buttons[0]},
         mediumButton{{font, "Средний", sf::Color::White}, buttons[1]},
         hardButton{{font, "Сложный", sf::Color::White}, buttons[2]};
@@ -304,6 +308,13 @@ void startGame() {
                 }
             }
         }
+
+        sf::Vector2i mouse = sf::Mouse::getPosition(*window);
+        particles.setEmitter(window->mapPixelToCoords(mouse));
+
+        sf::Time elapsed = clock.restart();
+        particles.update(elapsed);
+
         window->clear(sf::Color::Black);
 
         startButton.render(window);
@@ -311,6 +322,7 @@ void startGame() {
         easyButton.render(window);
         mediumButton.render(window);
         hardButton.render(window);
+        window->draw(particles);
 
         window->display();
     }
