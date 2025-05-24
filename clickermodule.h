@@ -14,7 +14,10 @@ public:
     void process(sf::RenderWindow* window, int time); // Логика модуля
     void render(sf::RenderWindow* window); // Отрисовка модуля
 private:
+    void setCorrectClickAmount();
+    unsigned int correctClickAmount;
     Button mainButton;
+    Button confirmButton;
     unsigned int count = 0;
     bool isMousePressedLastFrame = false;
     Label displayCount;
