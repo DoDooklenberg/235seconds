@@ -4,6 +4,8 @@
 #include "button.h"
 #include "basemodule.h"
 #include "drawingmodule.h"
+#include <iostream>
+#include "particlesystem.h"
 #include "levermodule.h"
 
 const sf::Font font("font.ttf");
@@ -243,6 +245,10 @@ void startGame() {
     bool startGame = false;
     int activeButton = -1;
 
+    ParticleSystem particles(7000);
+
+    sf::Clock clock;
+
     sf::RectangleShape* buttons[3]{new sf::RectangleShape{{width * 0.4f, height * 0.1f}},
                                    new sf::RectangleShape{{width * 0.4f, height * 0.1f}},
                                    new sf::RectangleShape{{width * 0.4f, height * 0.1f}}};
@@ -254,7 +260,7 @@ void startGame() {
     buttons[2]->setFillColor(sf::Color::Transparent);
 
     Button startButton{{font, "Начать", sf::Color::White}, {width * 0.55f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color(80, 80, 80)},
-        exitButton{{font, "Выход", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
+        exitButton{{font, "Назад", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
         easyButton{{font, "Легкий", sf::Color::White}, buttons[0]},
         mediumButton{{font, "Средний", sf::Color::White}, buttons[1]},
         hardButton{{font, "Сложный", sf::Color::White}, buttons[2]};
@@ -306,6 +312,13 @@ void startGame() {
                 }
             }
         }
+
+        sf::Vector2i mouse = sf::Mouse::getPosition(*window);
+        particles.setEmitter(window->mapPixelToCoords(mouse));
+
+        sf::Time elapsed = clock.restart();
+        particles.update(elapsed);
+
         window->clear(sf::Color::Black);
 
         startButton.render(window);
@@ -313,6 +326,7 @@ void startGame() {
         easyButton.render(window);
         mediumButton.render(window);
         hardButton.render(window);
+        window->draw(particles);
 
         window->display();
     }
@@ -325,35 +339,83 @@ void startGame() {
     }
 }
 
-int main() { // Это стартовое меню. Пока оно просто ждет нажатие в себя.
-    unsigned int width = 640;
-    unsigned int height = 360;
-    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width, height }), "235seconds");
+int main() { // Это стартовое меню.
+
+    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setFramerateLimit(60);
 
-    while (window->isOpen()) {
-        while (const std::optional event = window->pollEvent()) {
-            if (event->is<sf::Event::Closed>()) {
-                window->close();
-            } else if (const auto* resized = event->getIf<sf::Event::Resized>())
+    unsigned int width = window->getSize().x;
+    unsigned int height = window->getSize().y;
+
+    bool ifPlay = false;
+
+    Label gameName (font, "235 seconds", sf::Color::White, height * 0.1f);
+    gameName.setPositionCenter(sf::Vector2f(width * 0.5f, height * 0.06f));
+
+    Button playButton(Label(font, "Играть", sf::Color::White), sf::Vector2f(0.f, 0.f), sf::Vector2f(width * 0.1f, height * 0.1f), sf::Color::Magenta);
+    playButton.getShape()->setOrigin(playButton.getShape()->getGeometricCenter());
+    playButton.getShape()->setPosition({width * 0.5f, height * 0.7f});
+    playButton.reloadLabel();
+
+    Button exitButton(Label(font, "Выход", sf::Color::White), sf::Vector2f(0.f, 0.f),sf::Vector2f(width * 0.1f, height * 0.1f), sf::Color::Magenta);
+    exitButton.getShape()->setOrigin(playButton.getShape()->getGeometricCenter());
+    exitButton.getShape()->setPosition({width * 0.5f, height * 0.85f});
+    exitButton.reloadLabel();
+
+    Label instruction(font, "Инструкция", sf::Color::White, height * 0.05f);
+    instruction.setPositionCenter(sf::Vector2f(width * 0.5f, height * 0.2f));
+
+    sf::RectangleShape QrBase({height * 0.3f, height * 0.3f});
+    QrBase.setOrigin(QrBase.getGeometricCenter());
+    QrBase.setPosition(sf::Vector2f(width * 0.5f, height * 0.4f));
+
+    ParticleSystem particles(7000);
+
+    sf::Clock clock;
+
+    while (window->isOpen())
+    {
+        while (const std::optional event = window->pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
             {
-                sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
-                window->setView(sf::View(visibleArea));
-            } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>())
+                window->close();
+                return 0;
+            }
+            else if (playButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+            {
+                ifPlay = true;
+                window->close();
+            }
+            else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
             {
                 window->close();
             }
         }
-        window->clear(sf::Color::White);
 
-        //window->close();
+        sf::Vector2i mouse = sf::Mouse::getPosition(*window);
+        particles.setEmitter(window->mapPixelToCoords(mouse));
+
+        sf::Time elapsed = clock.restart();
+        particles.update(elapsed);
+
+        window->clear(sf::Color::Black);
+
+        gameName.render(window);
+        playButton.render(window);
+        exitButton.render(window);
+        instruction.render(window);
+        window->draw(particles);
+        window->draw(QrBase);
 
         window->display();
     }
     window->close();
     delete window;
 
-    startGame();
-
+    if (ifPlay)
+    {
+        startGame();
+    }
     return 0;
 }
