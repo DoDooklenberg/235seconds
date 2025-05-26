@@ -19,8 +19,11 @@ private:
     Button mainButton;
     Button confirmButton;
     unsigned int count = 0;
-    bool isMousePressedLastFrame = false;
     Label displayCount;
+
+    bool isMousePressedLastFrame = false;
+    bool isMousePressedLastFrame_2 = false;
+
 };
 
 #endif // CLICKERMODULE_H

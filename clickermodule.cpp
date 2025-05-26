@@ -1,4 +1,4 @@
-#include "clickermodule.h"
+﻿#include "clickermodule.h"
 #include <iostream>
 
 ClickerModule::ClickerModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont) :
@@ -18,8 +18,6 @@ void ClickerModule::setCorrectClickAmount()
     int lettersCount = 0;
     int numbersCount = 0;
     int numSum = 0;
-    int lCount = 0;
-    int dCount = 0;
 
     for (char ch : serial) {
         if (isdigit(ch)) {
@@ -28,48 +26,49 @@ void ClickerModule::setCorrectClickAmount()
         }
         else {lettersCount++;}
 
-        if (ch == 'L') {lCount++;}
-        else if (ch == 'D') {dCount++;}
         }
 
-    correctClickAmount = ((numSum * lettersCount) + (lCount * dCount * numbersCount) + 10) % 100;
+    correctClickAmount = ((numSum * lettersCount) + numbersCount * 5) % 101;
     std::cout << correctClickAmount << std::endl;
 }
 
 void ClickerModule::process(sf::RenderWindow *window, int time)
 {
-    if (mainButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-        mainButton.getLabel()->setColor(sf::Color::Green);
-        if (!isMousePressedLastFrame) {
-            count++;
-            displayCount.setString(std::to_string(count));
-            isMousePressedLastFrame = true;
-        }
-
-    }
-    else{
-        mainButton.getLabel()->setColor(sf::Color::Red);
-        isMousePressedLastFrame = false;
-    }
-
-    if (confirmButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-        confirmButton.getLabel()->setColor(sf::Color::Green);
-        if (!isMousePressedLastFrame) {
-            if (count == correctClickAmount) {
-                isDone = true;
+    if (!isDone) {
+        if (mainButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+            mainButton.getLabel()->setColor(sf::Color::Green);
+            if (!isMousePressedLastFrame) {
+                count++;
+                displayCount.setString(std::to_string(count));
                 isMousePressedLastFrame = true;
             }
-            else {
-                mistakes++;
-                count = 0;
-                isMousePressedLastFrame = true;
+
+        }
+        else{
+            mainButton.getLabel()->setColor(sf::Color::Red);
+            isMousePressedLastFrame = false;
+        }
+
+        if (confirmButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+            confirmButton.getLabel()->setColor(sf::Color::Green);
+            if (!isMousePressedLastFrame_2) {
+                if (count == correctClickAmount) {
+                    isDone = true;
+                }
+                else {
+                    mistakes++;
+                    count = 0;
+                    displayCount.setString(std::to_string(count));
+                }
+                isMousePressedLastFrame_2 = true;
             }
         }
+        else{
+           confirmButton.getLabel()->setColor(sf::Color::Red);
+           isMousePressedLastFrame_2 = false;
+        }
     }
-    else{
-       confirmButton.getLabel()->setColor(sf::Color::Red);
-//        isMousePressedLastFrame = false;
-    }
+
 }
 
 void ClickerModule::render(sf::RenderWindow *window)
