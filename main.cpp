@@ -143,11 +143,11 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
     int amtMistakes = 0;
 
     for (short i = 0; i < maxMistakes; i++) {
-        mistakes[i] = sf::CircleShape(width * 0.04f);
+        mistakes[i] = sf::CircleShape(width * 0.035f);
         mistakes[i].setFillColor(sf::Color::Transparent);
         mistakes[i].setOutlineColor(sf::Color::White);
         mistakes[i].setOutlineThickness(1.f);
-        mistakes[i].setPosition({width * 0.91f, height * 0.1f + width * 0.1f * i});
+        mistakes[i].setPosition({width * 0.92f, height * 0.1f + width * 0.1f * i});
     }
 
     timer.restart();
@@ -340,7 +340,6 @@ void startGame() {
 }
 
 int main() { // Это стартовое меню.
-
     sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setFramerateLimit(60);
 
@@ -365,9 +364,12 @@ int main() { // Это стартовое меню.
     Label instruction(font, "Инструкция", sf::Color::White, height * 0.05f);
     instruction.setPositionCenter(sf::Vector2f(width * 0.5f, height * 0.2f));
 
-    sf::RectangleShape QrBase({height * 0.3f, height * 0.3f});
-    QrBase.setOrigin(QrBase.getGeometricCenter());
-    QrBase.setPosition(sf::Vector2f(width * 0.5f, height * 0.4f));
+    sf::Texture qrImage("qr.png", false, sf::IntRect({0, 0}, {400, 400}));
+    sf::Sprite qr(qrImage);
+    qr.setTextureRect(sf::IntRect({0, 0}, {400, 400}));
+    qr.setScale(sf::Vector2f(height * 0.3f / 400.f, height * 0.3f / 400.f));
+    qr.setOrigin(qr.getLocalBounds().getCenter());
+    qr.setPosition(sf::Vector2f(width * 0.5f, height * 0.4f));
 
     ParticleSystem particles(7000);
 
@@ -406,7 +408,7 @@ int main() { // Это стартовое меню.
         exitButton.render(window);
         instruction.render(window);
         window->draw(particles);
-        window->draw(QrBase);
+        window->draw(qr);
 
         window->display();
     }

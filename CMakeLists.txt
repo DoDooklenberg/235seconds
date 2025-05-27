@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.28)
 project(235seconds LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+file(COPY font.ttf DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY qr.png DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 include(FetchContent)
 FetchContent_Declare(SFML
