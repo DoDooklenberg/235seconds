@@ -153,7 +153,7 @@ void WiresModule::generateWires()
     amountOfWires = rand()%3+2;
     int step = 0;
     for (int i = 0; i < amountOfWires; i++) {
-        Wires.push_back(DrawWires(origin + sf::Vector2f(side/3, side/(amountOfWires + 1) + step),
+        Wires.push_back(DrawWires(origin + sf::Vector2f(side/3, 30 + side/3 + step),
         sf::Vector2f(side/3, 15.f), getRandomColor(), false, false));
         step += 30;
     }
@@ -237,9 +237,21 @@ void WiresModule::render(sf::RenderWindow *window)
 
     window->draw(vertices.data(), vertices.size(), sf::PrimitiveType::LineStrip);
 
-    sf::Texture wireTexture("WireSprite_1.png");
+    sf::Texture wireTexture_0_cut("WireSprite_1_cut.png");
+    sf::Texture wireTexture_0("WireSprite_1.png");
+    sf::Texture wireTexture_1_cut("WireSprite_2_cut.png");
+    sf::Texture wireTexture_1("WireSprite_2.png");
+    sf::Texture wireTexture_2_cut("WireSprite_3_cut.png");
+    sf::Texture wireTexture_2("WireSprite_3.png");
+    sf::Texture wireTexture_3_cut("WireSprite_3_cut.png");
+    sf::Texture wireTexture_3("WireSprite_3.png");
+    sf::Texture wireTexture_4_cut("WireSprite_4_cut.png");
+    sf::Texture wireTexture_4("WireSprite_4.png");
+
+
     sf::Texture backPlateTexture("BackPlate.png");
     sf::Texture frontPlateTexture("FrontPlate.png");
+
 
     sf::RectangleShape backPlate({side / 3, side / 3});
     backPlate.setPosition({origin.x + side / 3, origin.y + side / 3});
@@ -252,25 +264,50 @@ void WiresModule::render(sf::RenderWindow *window)
         if (amountOfWires >= 1) {
             sf::RectangleShape wire_0(Wires.at(0).pos_2);
             wire_0.setPosition(Wires.at(0).pos_1);
-            wire_0.setTexture(&wireTexture);
+
+            if (Wires.at(0).wireIsCut) {
+                wire_0.setTexture(&wireTexture_0_cut);
+            }
+            else {
+                wire_0.setTexture(&wireTexture_0);
+            }
             wire_0.setFillColor(Wires.at(0).color);
             window->draw(wire_0);
-
             if (amountOfWires >= 2) {
                 sf::RectangleShape wire_1(Wires.at(1).pos_2);
                 wire_1.setPosition(Wires.at(1).pos_1);
+
+                if (Wires.at(1).wireIsCut) {
+                    wire_1.setTexture(&wireTexture_1_cut);
+                }
+                else {
+                    wire_1.setTexture(&wireTexture_1);
+                }
                 wire_1.setFillColor(Wires.at(1).color);
                 window->draw(wire_1);
 
                     if (amountOfWires >= 3) {
                         sf::RectangleShape wire_2(Wires.at(2).pos_2);
                         wire_2.setPosition(Wires.at(2).pos_1);
+
+                        if (Wires.at(2).wireIsCut) {
+                            wire_2.setTexture(&wireTexture_2_cut);
+                        }
+                        else {
+                            wire_2.setTexture(&wireTexture_2);
+                        }
                         wire_2.setFillColor(Wires.at(2).color);
                         window->draw(wire_2);
 
                         if (amountOfWires >= 4) {
                             sf::RectangleShape wire_3(Wires.at(3).pos_2);
                             wire_3.setPosition(Wires.at(3).pos_1);
+                            if (Wires.at(3).wireIsCut) {
+                                wire_3.setTexture(&wireTexture_3_cut);
+                            }
+                            else {
+                                wire_3.setTexture(&wireTexture_3);
+                            }
                             wire_3.setFillColor(Wires.at(3).color);
                             window->draw(wire_3);
                         }
