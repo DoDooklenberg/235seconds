@@ -5,6 +5,7 @@
 #include "button.h"
 #include "basemodule.h"
 #include "drawingmodule.h"
+#include "lightbulbsmodule.h"
 
 const sf::Font font("font.ttf");
 
@@ -118,6 +119,9 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
         switch (moduleUIDs[i]) {
         case 1:
             modules[i] = new DrawingModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
+            break;
+        case 4:
+            modules[i] = new LightBulbsModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         default:
             modules[i] = new BaseModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
@@ -317,6 +321,7 @@ void startGame() {
     delete window;
 
     if (startGame) {
+        m[4] = 4;
         game(235, m, (activeButton - 2) * -1);
     } else {
         main();
