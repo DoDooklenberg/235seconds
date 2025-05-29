@@ -228,16 +228,25 @@ void WiresModule::render(sf::RenderWindow *window)
 
     std::array vertices =
         {
-        sf::Vertex{{origin.x, origin.y}, sf::Color::Red},
-        sf::Vertex{{origin.x + side, origin.y}, sf::Color::Red},
-        sf::Vertex{{origin.x + side, origin.y + side}, sf::Color::Red},
-        sf::Vertex{{origin.x, origin.y + side}, sf::Color::Red},
-        sf::Vertex{{origin.x, origin.y}, sf::Color::Red},
+        sf::Vertex{{origin.x, origin.y}, sf::Color::White},
+        sf::Vertex{{origin.x + side, origin.y}, sf::Color::White},
+        sf::Vertex{{origin.x + side, origin.y + side}, sf::Color::White},
+        sf::Vertex{{origin.x, origin.y + side}, sf::Color::White},
+        sf::Vertex{{origin.x, origin.y}, sf::Color::White},
         };
 
     window->draw(vertices.data(), vertices.size(), sf::PrimitiveType::LineStrip);
 
     sf::Texture wireTexture("WireSprite_1.png");
+    sf::Texture backPlateTexture("BackPlate.png");
+    sf::Texture frontPlateTexture("FrontPlate.png");
+
+    sf::RectangleShape backPlate({side / 3, side / 3});
+    backPlate.setPosition({origin.x + side / 3, origin.y + side / 3});
+    backPlate.setTexture(&backPlateTexture);
+    window->draw(backPlate);
+
+
 
 
         if (amountOfWires >= 1) {
@@ -268,6 +277,11 @@ void WiresModule::render(sf::RenderWindow *window)
                     }
             }
         }
+
+        sf::RectangleShape frontPlate({side / 3, side / 3});
+        backPlate.setPosition({origin.x + side / 3, origin.y + side / 3});
+        backPlate.setTexture(&frontPlateTexture);
+        window->draw(backPlate);
 
 
 
