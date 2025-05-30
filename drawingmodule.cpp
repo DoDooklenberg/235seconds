@@ -6,6 +6,7 @@ DrawingModule::DrawingModule(sf::Vector2f newOrigin, float newSide, std::string 
 {
     stringPull.setLooping(true);
     genertePoints();
+    stringPull.setVolume(20.f);
 }
 
 void DrawingModule::genertePoints()
