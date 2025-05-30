@@ -194,10 +194,6 @@ void WiresModule::process(sf::RenderWindow *window, int time)
                     }
                 }
             }
-            else {
-                const auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Arrow).value();
-                window->setMouseCursor(cursor);
-            }
     }
 
     switch (amountOfWires) {
