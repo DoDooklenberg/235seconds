@@ -12,6 +12,8 @@ file(COPY WireSprite_4.png DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY WireSprite_4_cut.png DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY BackPlate.png DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY FrontPlate.png DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY font.ttf DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY qr.png DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 include(FetchContent)
 FetchContent_Declare(SFML
@@ -30,6 +32,7 @@ add_executable(main main.cpp
     button.h button.cpp
     drawingmodule.cpp drawingmodule.h
     drawingpoint.cpp drawingpoint.h)
-
+    particlesystem.h particlesystem.cpp
+    levermodule.h levermodule.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)

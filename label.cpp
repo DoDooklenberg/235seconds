@@ -1,5 +1,4 @@
 #include "label.h"
-#include <SFML/Graphics.hpp>
 #include <string>
 
 void Label::reloadPos()
