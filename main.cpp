@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <string>
 #include <vector>
 #include "label.h"
@@ -11,6 +12,7 @@
 #include "levermodule.h"
 
 const sf::Font font("font.ttf");
+sf::Music music;
 
 int main();
 
@@ -49,11 +51,15 @@ void win(int time) {
 void lose(int neutralized) {} // Заглушка
 
 void game(int time, int moduleUIDs[6], int maxMistakes) {
+    music.stop();
     sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setVerticalSyncEnabled(true);
     float width = window->getSize().x;
     float height = window->getSize().y;
     float uSize = (width + height) / 2;
+
+    sf::SoundBuffer beepBuf("beep.wav");
+    sf::Sound beep(beepBuf);
 
     Label infoText(font, "Загрузка...", sf::Color::White, uSize * 0.12f);
     infoText.setPositionCenter({ width * 0.5f, height * 0.5f });
@@ -181,7 +187,12 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             window->close();
         }
 
+        if (time - timer.getElapsedTime().asSeconds() < 30) {
+            display.setColor(sf::Color::Red);
+        }
+
         if (seconds != std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60)) {
+            beep.play();
             if (int(time - timer.getElapsedTime().asSeconds()) % 60 < 10) {
                 seconds = "0" + std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60);
             } else {
@@ -349,6 +360,12 @@ int main() { // Это стартовое меню.
 
     unsigned int width = window->getSize().x;
     unsigned int height = window->getSize().y;
+    if (!bool(music.getStatus())) {
+        music.openFromFile("music.wav");
+        music.setVolume(35.f);
+        music.setLooping(true);
+        music.play();
+    }
 
     bool ifPlay = false;
 
@@ -379,6 +396,8 @@ int main() { // Это стартовое меню.
 
     sf::Clock clock;
 
+    bool isMouseMove = false;
+
     while (window->isOpen())
     {
         while (const std::optional event = window->pollEvent())
@@ -388,14 +407,16 @@ int main() { // Это стартовое меню.
                 window->close();
                 return 0;
             }
-            else if (playButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+            else if (playButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && isMouseMove)
             {
                 ifPlay = true;
                 window->close();
             }
-            else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+            else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && isMouseMove)
             {
                 window->close();
+            } else if (event->is<sf::Event::MouseMovedRaw>()) {
+                isMouseMove = true;
             }
         }
 
