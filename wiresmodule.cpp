@@ -176,8 +176,6 @@ bool WiresModule::WiresPosCheck(sf::Vector2f cursor)
 void WiresModule::process(sf::RenderWindow *window, int time)
 {
     if (isDone == false) {
-        const auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Arrow).value();
-        window->setMouseCursor(cursor);
 
             if (WiresPosCheck(sf::Vector2f(sf::Mouse::getPosition()))) {
                 if (Wires.at(mouseOnWire).wireIsCut == false) {
@@ -196,6 +194,10 @@ void WiresModule::process(sf::RenderWindow *window, int time)
                             }
                     }
                 }
+            }
+            else {
+                const auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Arrow).value();
+                window->setMouseCursor(cursor);
             }
     }
 
