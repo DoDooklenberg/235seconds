@@ -20,70 +20,164 @@ int main();
 void win(int time) {
     unsigned int width = 1280;
     unsigned int height = 720;
-    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width, height }), "Winning window",sf::Style::None);
+    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode({ width, height }), "Winning window", sf::Style::None);
     window->setFramerateLimit(60);
     sf::sleep(sf::milliseconds(200));
 
     Label message(font, "Вы выжили!", sf::Color::White, 100);
-    message.setPositionCenter({width * 0.5f, height * 0.5f});
+    message.setPositionCenter({ width * 0.5f, height * 0.5f });
+
+    std::string timeStr = "время: ";
+    if (time / 60 < 10) {
+        timeStr += "0" + std::to_string(time / 60) + ":";
+    }
+    else {
+        timeStr += std::to_string(time / 60) + ":";
+    }
+    if (time % 60 < 10) {
+        timeStr += "0" + std::to_string(time % 60);
+    }
+    else {
+        timeStr += std::to_string(time % 60);
+    }
+
+    Label timeLabel(font, timeStr, sf::Color::White, 50);
+    timeLabel.setPositionCenter({ width * 0.5f, height * 0.35f });
+
+    Button exitButton(Label(font, "Выход", sf::Color::White),
+        sf::Vector2f(width * 0.1f, height * 0.85f),
+        sf::Vector2f(width * 0.15f, height * 0.1f),
+        sf::Color::Magenta);
+
+    Button playAgainButton(Label(font, "Играть ещё раз", sf::Color::White),
+        sf::Vector2f(width * 0.75f, height * 0.85f),
+        sf::Vector2f(width * 0.15f, height * 0.1f),
+        sf::Color::Magenta);
+
+    sf::SoundBuffer clickBuf("click.wav");
+    sf::Sound click(clickBuf);
+    click.setVolume(20.f);
+
+    bool playAgain = false;
 
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
-            if (event->is<sf:: Event::Closed>()) {
+            if (event->is<sf::Event::Closed>()) {
                 window->close();
-            }  else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
-            {
-                if (keyPressed->scancode == sf::Keyboard::Scan::Escape)
-                {
+            }
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+                if (keyPressed->scancode == sf::Keyboard::Scan::Escape) {
                     window->close();
+                }
+            }
+            else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
+                if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
+                    window->close();
+                }
+                else if (playAgainButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
+                    window->close();
+                    playAgain = true;
                 }
             }
         }
         window->clear(sf::Color::Black);
 
         message.render(window);
+        timeLabel.render(window);
+        exitButton.render(window);
+        playAgainButton.render(window);
 
         window->display();
     }
     window->close();
     delete window;
-};
 
-void lose(int neutralized) {
+    if (playAgain) {
+        main();
+    }
+}
+
+void lose(int neutralized, int difficulty) {
     unsigned int width = 1280;
     unsigned int height = 720;
-    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width, height }), "Winning window",sf::Style::None);
+    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode({ width, height }), "Winning window", sf::Style::None);
     window->setFramerateLimit(60);
     sf::sleep(sf::milliseconds(200));
 
-    Label message(font, "Вы не выжили!", sf::Color::White, 100);
-    message.setPositionCenter({width * 0.5f, height * 0.5f});
+    Label message(font, "Вы проиграли!", sf::Color::White, 100);
+    message.setPositionCenter({ width * 0.5f, height * 0.5f });
+
+
+    int totalModules = (difficulty == 0) ? 2 : (difficulty == 1) ? 4 : 6;
+
+
+    int actualNeutralized = (neutralized > totalModules) ? totalModules : neutralized;
+
+    std::string modulesStr = "нейтрализовано модулей: " + std::to_string(actualNeutralized) + " из " + std::to_string(totalModules);
+    Label modulesLabel(font, modulesStr, sf::Color::White, 50);
+    modulesLabel.setPositionCenter({ width * 0.5f, height * 0.65f });
+
+    Button exitButton(Label(font, "Выход", sf::Color::White),
+        sf::Vector2f(width * 0.1f, height * 0.85f),
+        sf::Vector2f(width * 0.15f, height * 0.1f),
+        sf::Color::Magenta);
+
+    Button playAgainButton(Label(font, "Играть ещё раз", sf::Color::White),
+        sf::Vector2f(width * 0.75f, height * 0.85f),
+        sf::Vector2f(width * 0.15f, height * 0.1f),
+        sf::Color::Magenta);
+
+    sf::SoundBuffer clickBuf("click.wav");
+    sf::Sound click(clickBuf);
+    click.setVolume(20.f);
+
+    bool playAgain = false;
 
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
-            if (event->is<sf:: Event::Closed>()) {
+            if (event->is<sf::Event::Closed>()) {
                 window->close();
-            }  else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
-            {
-                if (keyPressed->scancode == sf::Keyboard::Scan::Escape)
-                {
+            }
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+                if (keyPressed->scancode == sf::Keyboard::Scan::Escape) {
                     window->close();
+                }
+            }
+            else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
+                if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
+                    window->close();
+                }
+                else if (playAgainButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
+                    window->close();
+                    playAgain = true;
                 }
             }
         }
         window->clear(sf::Color::Black);
 
         message.render(window);
+        modulesLabel.render(window);
+        exitButton.render(window);
+        playAgainButton.render(window);
 
         window->display();
     }
     window->close();
     delete window;
+
+    if (playAgain) {
+        main();
+    }
 }
 
 void game(int time, int moduleUIDs[6], int maxMistakes) {
+    int difficulty = (maxMistakes == 2) ? 0 : (maxMistakes == 1) ? 1 : 2;
     music.stop();
-    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
+    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setVerticalSyncEnabled(true);
     float width = window->getSize().x;
     float height = window->getSize().y;
@@ -104,55 +198,60 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
     std::string minutes, seconds;
     if (time % 60 < 10) {
         seconds = "0" + std::to_string(time % 60);
-    } else {
+    }
+    else {
         seconds = std::to_string(time % 60);
     }
     if (time / 60 < 10) {
         minutes = "0" + std::to_string(time / 60);
-    } else {
+    }
+    else {
         minutes = std::to_string(time / 60);
     }
     display.setString(minutes + ":" + seconds);
 
     sf::Clock timer;
 
-    char symbols[37]  = "0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
+    char symbols[37] = "0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
     std::string serial;
-    for (int i = 0; i<3; i++) {
-        serial += symbols[rand()%(10)];
+    for (int i = 0; i < 3; i++) {
+        serial += symbols[rand() % (10)];
     }
-    for (int i = 0; i<9; i++) {
-        serial += symbols[rand()%(37)];
+    for (int i = 0; i < 9; i++) {
+        serial += symbols[rand() % (37)];
     }
     Label LSerial(font, serial, sf::Color::White, height * 0.08f);
-    LSerial.setPositionCenter({width * 0.5f, height * 0.05f});
+    LSerial.setPositionCenter({ width * 0.5f, height * 0.05f });
 
     BaseModule* modules[6];
 
     float moduleSide;
     if (width * 0.8f * 2 <= height * 0.8f * 3) {
         moduleSide = 0.34f * width * 0.8f;
-    } else {
+    }
+    else {
         moduleSide = 0.51f * height * 0.8f;
     }
-    sf::RectangleShape statuses[6]{sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
+    sf::RectangleShape statuses[6]{ sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
                                    sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
                                    sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
                                    sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
                                    sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)),
-                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide))};
-    int mistakesCount[6]{0};
+                                   sf::RectangleShape(sf::Vector2f(moduleSide, moduleSide)) };
+    int mistakesCount[6]{ 0 };
     sf::Vector2f origin;
     for (short i = 0; i < 6; i++) {
-        origin = {width * 0.5f, height * 0.5f};
+        origin = { width * 0.5f, height * 0.5f };
         if (i % 2 == 0) {
             origin += {0.f, -moduleSide};
         }
         if (i % 3 == 0) {
             origin += {moduleSide * -1.5f, 0.f};
-        } else if (i % 3 == 1) {
+        }
+        else if (i % 3 == 1) {
             origin += {moduleSide * -0.5f, 0.f};
-        } else {
+        }
+        else {
             origin += {moduleSide * 0.5f, 0.f};
         }
         statuses[i].setPosition(origin);
@@ -178,15 +277,15 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             break;
         }
     }
-    origin = {width * 0.5f, height * 0.5f};
+    origin = { width * 0.5f, height * 0.5f };
     std::array border =
-        {
-         sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
-         sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
-         sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
-         sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
-         sf::Vertex{{origin.x  - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
-         };
+    {
+     sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+     sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+     sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
+     sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
+     sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+    };
     std::vector<sf::CircleShape> mistakes;
     int amtMistakes = 0;
 
@@ -195,7 +294,7 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
         mistakes.at(i).setFillColor(sf::Color::Transparent);
         mistakes.at(i).setOutlineColor(sf::Color::White);
         mistakes.at(i).setOutlineThickness(1.f);
-        mistakes.at(i).setPosition({width * 0.91f, height * 0.1f + width * 0.1f * i});
+        mistakes.at(i).setPosition({ width * 0.91f, height * 0.1f + width * 0.1f * i });
     }
 
     timer.restart();
@@ -204,9 +303,10 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
 
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
-            if (event->is<sf:: Event::Closed>()) {
+            if (event->is<sf::Event::Closed>()) {
                 window->close();
-            } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            }
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
             {
                 if (keyPressed->scancode == sf::Keyboard::Scan::Escape)
                 {
@@ -236,12 +336,14 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             beep.play();
             if (int(time - timer.getElapsedTime().asSeconds()) % 60 < 10) {
                 seconds = "0" + std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60);
-            } else {
+            }
+            else {
                 seconds = std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60);
             }
             if (int(time - timer.getElapsedTime().asSeconds()) / 60 < 10) {
                 minutes = "0" + std::to_string(int(time - timer.getElapsedTime().asSeconds()) / 60);
-            } else {
+            }
+            else {
                 minutes = std::to_string(int(time - timer.getElapsedTime().asSeconds()) / 60);
             }
             display.setString(minutes + ":" + seconds);
@@ -258,11 +360,13 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
                     done.play();
                     statuses[i].setFillColor(sf::Color(0, 255, 0, 128));
                 }
-            } else if (modules[i]->getMistakes() != mistakesCount[i]) {
+            }
+            else if (modules[i]->getMistakes() != mistakesCount[i]) {
                 mistakesCount[i] = modules[i]->getMistakes();
                 error.play();
                 statuses[i].setFillColor(sf::Color(255, 0, 0, 230));
-            } else {
+            }
+            else {
                 statuses[i].setFillColor(sf::Color(255, 0, 0, std::make_unsigned_t<int>(statuses[i].getFillColor().a * 0.99f)));
             }
         }
@@ -288,9 +392,10 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
     if (wining) {
         winSound.play();
         win(time - timer.getElapsedTime().asSeconds());
-    } else {
+    }
+    else {
         boom.play();
-        lose(neutralizedCount);
+        lose(neutralizedCount, difficulty);
     }
 }
 
@@ -301,7 +406,7 @@ void startGame() {
     float height = window->getSize().y;
     float uSize = (width + height) / 2;
     window->setFramerateLimit(60);
-    int m[6]{0}, buffer[2]{0};
+    int m[6]{ 0 }, buffer[2]{ 0 };
 
     sf::SoundBuffer clickBuf("click.wav");
     sf::Sound click(clickBuf);
@@ -314,37 +419,42 @@ void startGame() {
     bool startGame = false;
     int activeButton = -1;
 
-    sf::RectangleShape* buttons[3]{new sf::RectangleShape{{width * 0.4f, height * 0.1f}},
+    sf::RectangleShape* buttons[3]{ new sf::RectangleShape{{width * 0.4f, height * 0.1f}},
                                    new sf::RectangleShape{{width * 0.4f, height * 0.1f}},
-                                   new sf::RectangleShape{{width * 0.4f, height * 0.1f}}};
-    buttons[0]->setPosition({width * 0.3f, height * 0.27f});
+                                   new sf::RectangleShape{{width * 0.4f, height * 0.1f}} };
+    buttons[0]->setPosition({ width * 0.3f, height * 0.27f });
     buttons[0]->setFillColor(sf::Color::Transparent);
-    buttons[1]->setPosition({width * 0.3f, height * 0.4f});
+    buttons[1]->setPosition({ width * 0.3f, height * 0.4f });
     buttons[1]->setFillColor(sf::Color::Transparent);
-    buttons[2]->setPosition({width * 0.3f, height * 0.53f});
+    buttons[2]->setPosition({ width * 0.3f, height * 0.53f });
     buttons[2]->setFillColor(sf::Color::Transparent);
 
-    Button startButton{{font, "Начать", sf::Color::White}, {width * 0.55f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color(80, 80, 80)},
-        exitButton{{font, "Назад", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
-        easyButton{{font, "Легкий", sf::Color::White}, buttons[0]},
-        mediumButton{{font, "Средний", sf::Color::White}, buttons[1]},
-        hardButton{{font, "Сложный", sf::Color::White}, buttons[2]};
-  
+    Button startButton{ {font, "Начать", sf::Color::White}, {width * 0.55f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color(80, 80, 80) },
+        exitButton{ {font, "Назад", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta },
+        easyButton{ {font, "Легкий", sf::Color::White}, buttons[0] },
+        mediumButton{ {font, "Средний", sf::Color::White}, buttons[1] },
+        hardButton{ {font, "Сложный", sf::Color::White}, buttons[2] };
+
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window->close();
-            } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
+            }
+            else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
                 if (startButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && activeButton != -1) {
                     click.play();
-                    int haveModule[6]{0};
-                    for (int i = 0; i < (activeButton + 1) * 2; i++) {
+                    int haveModule[6]{ 0 };
+                    int totalModules = (activeButton == 0) ? 2 : (activeButton == 1) ? 4 : 6;
+                    for (int i = 0; i < totalModules; i++) {
                         int currentModule = rand() % 5 + 1;
                         while (haveModule[currentModule]) {
                             currentModule = rand() % 5 + 1;
-                        } // TODO раскомментить когда модулей будет 6
+                        }
                         haveModule[currentModule] = 1;
                         m[i] = currentModule;
+                    }
+                    for (int i = totalModules; i < 6; i++) {
+                        m[i] = 0;
                     }
                     for (int i = 0; i < 60; i++) {
                         buffer[0] = rand() % 6;
@@ -354,24 +464,28 @@ void startGame() {
                     }
                     startGame = true;
                     window->close();
-                } else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                }
+                else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
                     click.play();
                     window->close();
-                } else if (easyButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                }
+                else if (easyButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
                     click.play();
                     easyButton.getLabel()->setColor(sf::Color::Magenta);
                     mediumButton.getLabel()->setColor(sf::Color::White);
                     hardButton.getLabel()->setColor(sf::Color::White);
                     activeButton = 0;
                     startButton.getShape()->setFillColor(sf::Color::Magenta);
-                } else if (mediumButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                }
+                else if (mediumButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
                     click.play();
                     easyButton.getLabel()->setColor(sf::Color::White);
                     mediumButton.getLabel()->setColor(sf::Color::Magenta);
                     hardButton.getLabel()->setColor(sf::Color::White);
                     activeButton = 1;
                     startButton.getShape()->setFillColor(sf::Color::Magenta);
-                } else if (hardButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                }
+                else if (hardButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
                     click.play();
                     easyButton.getLabel()->setColor(sf::Color::White);
                     mediumButton.getLabel()->setColor(sf::Color::White);
@@ -403,13 +517,14 @@ void startGame() {
     delete window;
     if (startGame) {
         game(235, m, (activeButton - 2) * -1);
-    } else {
+    }
+    else {
         main();
     }
 }
 
-int main() { // Это стартовое меню.
-    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
+int main() {
+    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setFramerateLimit(60);
 
     unsigned int width = window->getSize().x;
@@ -426,25 +541,25 @@ int main() { // Это стартовое меню.
 
     bool ifPlay = true;
 
-    Label gameName (font, "235 seconds", sf::Color::White, height * 0.1f);
+    Label gameName(font, "235 seconds", sf::Color::White, height * 0.1f);
     gameName.setPositionCenter(sf::Vector2f(width * 0.5f, height * 0.06f));
 
     Button playButton(Label(font, "Играть", sf::Color::White), sf::Vector2f(0.f, 0.f), sf::Vector2f(width * 0.1f, height * 0.1f), sf::Color::Magenta);
     playButton.getShape()->setOrigin(playButton.getShape()->getGeometricCenter());
-    playButton.getShape()->setPosition({width * 0.5f, height * 0.7f});
+    playButton.getShape()->setPosition({ width * 0.5f, height * 0.7f });
     playButton.reloadLabel();
 
-    Button exitButton(Label(font, "Выход", sf::Color::White), sf::Vector2f(0.f, 0.f),sf::Vector2f(width * 0.1f, height * 0.1f), sf::Color::Magenta);
+    Button exitButton(Label(font, "Выход", sf::Color::White), sf::Vector2f(0.f, 0.f), sf::Vector2f(width * 0.1f, height * 0.1f), sf::Color::Magenta);
     exitButton.getShape()->setOrigin(playButton.getShape()->getGeometricCenter());
-    exitButton.getShape()->setPosition({width * 0.5f, height * 0.85f});
+    exitButton.getShape()->setPosition({ width * 0.5f, height * 0.85f });
     exitButton.reloadLabel();
 
     Label instruction(font, "Инструкция", sf::Color::White, height * 0.05f);
     instruction.setPositionCenter(sf::Vector2f(width * 0.5f, height * 0.2f));
 
-    sf::Texture qrImage("qr.png", false, sf::IntRect({0, 0}, {400, 400}));
+    sf::Texture qrImage("qr.png", false, sf::IntRect({ 0, 0 }, { 400, 400 }));
     sf::Sprite qr(qrImage);
-    qr.setTextureRect(sf::IntRect({0, 0}, {400, 400}));
+    qr.setTextureRect(sf::IntRect({ 0, 0 }, { 400, 400 }));
     qr.setScale(sf::Vector2f(height * 0.3f / 400.f, height * 0.3f / 400.f));
     qr.setOrigin(qr.getLocalBounds().getCenter());
     qr.setPosition(sf::Vector2f(width * 0.5f, height * 0.4f));
@@ -471,7 +586,8 @@ int main() { // Это стартовое меню.
             {
                 click.play();
                 ifPlay = false;
-            } else if (!ifPlay) {
+            }
+            else if (!ifPlay) {
                 window->close();
             }
         }
