@@ -40,7 +40,8 @@ add_executable(main main.cpp
     drawingmodule.cpp drawingmodule.h
     drawingpoint.cpp drawingpoint.h
     particlesystem.h particlesystem.cpp
-    levermodule.h levermodule.cpp)
+    levermodule.h levermodule.cpp
+    shifrmodule.h shifrmodule.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)
 target_link_libraries(main PRIVATE SFML::Audio)
