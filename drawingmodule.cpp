@@ -2,8 +2,9 @@
 
 
 DrawingModule::DrawingModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):
-    BaseModule(newOrigin, newSide, newSerial, newFont), StringSoundBuffer("StringPull.wav"), StringPull(StringSoundBuffer)
+    BaseModule(newOrigin, newSide, newSerial, newFont), stringSoundBuffer("StringPull.wav"), stringPull(stringSoundBuffer)
 {
+    stringPull.setLooping(true);
     genertePoints();
 }
 
@@ -83,26 +84,31 @@ void DrawingModule::process(sf::RenderWindow *window, int time)
                             points.at(currentPoint - 1).setNext(&points.at(i));
                             points.at(i).setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
                             currentPoint = i + 1;
+                            stringPull.play();
                             break;
                         }
                     }
+                    stringPull.setPitch((points.at(currentPoint - 1).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).length() * side * 0.001f);
                 } else {
                     for (int i = 0; i < amt; i++){
                         if ((points.at(i).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).length() <= side * 0.035f) {
                             points.at(i).setTarget(sf::Vector2f(sf::Mouse::getPosition(*window)));
                             currentPoint = i + 1;
+                            stringPull.play();
                             break;
                         }
                     }
                 }
             } else {
                 currentPoint = 0;
+                stringPull.pause();
                 for (int i = 0; i < amt; i++){
                     points.at(i).resetTarget();
                 }
             }
         } else {
             currentPoint = 0;
+            stringPull.pause();
             for (int i = 0; i < amt; i++){
                 points.at(i).resetTarget();
             }

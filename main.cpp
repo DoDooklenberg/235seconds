@@ -403,6 +403,7 @@ void startGame() {
     window->close();
     delete window;
     if (startGame) {
+        m[0] = 1;
         game(235, m, (activeButton - 2) * -1);
     } else {
         main();
