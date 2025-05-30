@@ -5,6 +5,7 @@
 #include <vector>
 #include "basemodule.h"
 #include "drawwires.h"
+#include <SFML/Audio.hpp>
 
 
 class WiresModule : public BaseModule {
@@ -17,6 +18,8 @@ private:
     void setWireColors();
     bool WiresPosCheck(sf::Vector2f pos);
     int amountOfWires;
+    sf::SoundBuffer WireSoundBuffer;
+    sf::Sound WireCut;
 public:
     int mouseOnWire = 0;
     WiresModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);

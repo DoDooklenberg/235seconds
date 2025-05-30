@@ -17,7 +17,7 @@ private:
     sf::RectangleShape base2;
     sf::CircleShape circle;
     sf::RectangleShape stick;
-    sf::SoundBuffer buffer;
+    sf::SoundBuffer LeverSoundBuffer;
     sf::Sound LeverFlip;
 public:
     LeverModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);

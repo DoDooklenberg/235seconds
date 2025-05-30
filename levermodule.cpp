@@ -50,7 +50,7 @@ int LeverModule::serialSum() // сумма цифр серийного номе�
 }
 
 LeverModule::LeverModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):
-    BaseModule(newOrigin, newSide, newSerial, newFont), buffer("LeverFlip.wav"), LeverFlip(buffer)
+    BaseModule(newOrigin, newSide, newSerial, newFont), LeverSoundBuffer("LeverFlip.wav"), LeverFlip(LeverSoundBuffer)
 {
     startPosition();
 
