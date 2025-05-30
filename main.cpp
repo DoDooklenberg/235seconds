@@ -11,6 +11,7 @@
 #include "particlesystem.h"
 #include "levermodule.h"
 #include "clickermodule.h"
+#include "shifrmodule.h"
 
 const sf::Font font("font.ttf");
 sf::Music music;
@@ -168,6 +169,9 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             break;
         case 4:
             modules[i] = new ClickerModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
+            break;
+        case 5:
+            modules[i] = new ShifrModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         default:
             modules[i] = new BaseModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
@@ -329,9 +333,9 @@ void startGame() {
                     click.play();
                     int haveModule[6]{0};
                     for (int i = 0; i < (activeButton + 1) * 2; i++) {
-                        int currentModule = rand() % 4 + 1;
+                        int currentModule = rand() % 5 + 1;
                         while (haveModule[currentModule]) {
-                            currentModule = rand() % 4 + 1;
+                            currentModule = rand() % 5 + 1;
                         } // TODO раскомментить когда модулей будет 6
                         haveModule[currentModule] = 1;
                         m[i] = currentModule;
