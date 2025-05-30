@@ -1,5 +1,4 @@
 #include "wiresmodule.h"
-#include <iostream>
 #include "basemodule.h"
 #include <vector>
 #include <SFML/Audio.hpp>
@@ -63,7 +62,7 @@ void WiresModule::setCorrectWires()
             if (Wires.at(i).color == sf::Color::Blue) {colorCodeSum += 52;}
             if (Wires.at(i).color == sf::Color::Cyan) {colorCodeSum += 13;}
         }
-        Wires.at((lettersCount * 2 + numbersCount * 3 + colorCodeSum) % 3).isCorrect = true;
+        Wires.at((lettersCount * 2 + numbersCount * 3 + colorCodeSum) % 4).isCorrect = true;
         break;
     }
     //при четырёх проводах читать ниже

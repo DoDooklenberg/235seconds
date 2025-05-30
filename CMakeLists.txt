@@ -20,6 +20,7 @@ file(COPY beep.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY music.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY click.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY boom.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY StringPull.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 include(FetchContent)
 FetchContent_Declare(SFML
