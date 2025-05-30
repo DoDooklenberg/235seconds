@@ -20,6 +20,12 @@ private:
     int amountOfWires;
     sf::SoundBuffer WireSoundBuffer;
     sf::Sound WireCut;
+    sf::Texture wireTexture_0_cut, wireTexture_0,
+        wireTexture_1_cut, wireTexture_1,
+        wireTexture_2_cut, wireTexture_2,
+        wireTexture_3_cut, wireTexture_3,
+        wireTexture_4_cut, wireTexture_4,
+        backPlateTexture, frontPlateTexture;
 public:
     int mouseOnWire = 0;
     WiresModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);

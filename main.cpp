@@ -90,8 +90,9 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
     float height = window->getSize().y;
     float uSize = (width + height) / 2;
 
-    sf::SoundBuffer beepBuf("beep.wav"), boomBuf("boom.wav");
-    sf::Sound beep(beepBuf), boom(boomBuf);
+    sf::SoundBuffer beepBuf("beep.wav"), boomBuf("boom.wav"), winBuf("win.wav"), errorBuf("error.wav"), doneBuf("done.wav");
+    sf::Sound beep(beepBuf), boom(boomBuf), winSound(winBuf), error(errorBuf), done(doneBuf);
+    error.setVolume(10.f);
 
     Label infoText(font, "Загрузка...", sf::Color::White, uSize * 0.12f);
     infoText.setPositionCenter({ width * 0.5f, height * 0.5f });
@@ -116,7 +117,7 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
 
     sf::Clock timer;
 
-    char symbols[37]  = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    char symbols[37]  = "0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
     std::string serial;
     for (int i = 0; i<3; i++) {
         serial += symbols[rand()%(10)];
@@ -228,8 +229,11 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
         if (time - timer.getElapsedTime().asSeconds() < 30) {
             display.setColor(sf::Color::Red);
         }
+        if (time - timer.getElapsedTime().asSeconds() < 10) {
+            beep.play();
+        }
 
-        if (seconds != std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60)) {
+        if (seconds != std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60) && seconds != "0" + std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60)) {
             beep.play();
             if (int(time - timer.getElapsedTime().asSeconds()) % 60 < 10) {
                 seconds = "0" + std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60);
@@ -252,10 +256,12 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             if (modules[i]->getIsDone()) {
                 neutralizedCount++;
                 if (!modules[i]->getIsBase()) {
+                    done.play();
                     statuses[i].setFillColor(sf::Color(0, 255, 0, 128));
                 }
             } else if (modules[i]->getMistakes() != mistakesCount[i]) {
                 mistakesCount[i] = modules[i]->getMistakes();
+                error.play();
                 statuses[i].setFillColor(sf::Color(255, 0, 0, 230));
             } else {
                 statuses[i].setFillColor(sf::Color(255, 0, 0, std::make_unsigned_t<int>(statuses[i].getFillColor().a * 0.99f)));
@@ -281,6 +287,7 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
     window->close();
     delete window;
     if (wining) {
+        winSound.play();
         win(time - timer.getElapsedTime().asSeconds());
     } else {
         boom.play();
