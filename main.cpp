@@ -1,13 +1,19 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <string>
+#include <vector>
 #include "label.h"
 #include "button.h"
 #include "basemodule.h"
 #include "drawingmodule.h"
+#include "wiresmodule.h"
+#include <iostream>
+#include "particlesystem.h"
 #include "levermodule.h"
 #include "clickermodule.h"
 
 const sf::Font font("font.ttf");
+sf::Music music;
 
 int main();
 
@@ -43,14 +49,48 @@ void win(int time) {
     delete window;
 };
 
-void lose(int neutralized) {} // Заглушка
+void lose(int neutralized) {
+    unsigned int width = 1280;
+    unsigned int height = 720;
+    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width, height }), "Winning window",sf::Style::None);
+    window->setFramerateLimit(60);
+    sf::sleep(sf::milliseconds(200));
+
+    Label message(font, "Вы не выжили!", sf::Color::White, 100);
+    message.setPositionCenter({width * 0.5f, height * 0.5f});
+
+    while (window->isOpen()) {
+        while (const std::optional event = window->pollEvent()) {
+            if (event->is<sf:: Event::Closed>()) {
+                window->close();
+            }  else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->scancode == sf::Keyboard::Scan::Escape)
+                {
+                    window->close();
+                }
+            }
+        }
+        window->clear(sf::Color::Black);
+
+        message.render(window);
+
+        window->display();
+    }
+    window->close();
+    delete window;
+}
 
 void game(int time, int moduleUIDs[6], int maxMistakes) {
+    music.stop();
     sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setVerticalSyncEnabled(true);
     float width = window->getSize().x;
     float height = window->getSize().y;
     float uSize = (width + height) / 2;
+
+    sf::SoundBuffer beepBuf("beep.wav"), boomBuf("boom.wav");
+    sf::Sound beep(beepBuf), boom(boomBuf);
 
     Label infoText(font, "Загрузка...", sf::Color::White, uSize * 0.12f);
     infoText.setPositionCenter({ width * 0.5f, height * 0.5f });
@@ -121,6 +161,9 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             modules[i] = new DrawingModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         case 2:
+            modules[i] = new WiresModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
+            break;
+        case 3:
             modules[i] = new LeverModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         case 3:
@@ -140,16 +183,15 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
          sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
          sf::Vertex{{origin.x  - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
          };
-
-    sf::CircleShape mistakes[maxMistakes];
+    std::vector<sf::CircleShape> mistakes;
     int amtMistakes = 0;
 
     for (short i = 0; i < maxMistakes; i++) {
-        mistakes[i] = sf::CircleShape(width * 0.04f);
-        mistakes[i].setFillColor(sf::Color::Transparent);
-        mistakes[i].setOutlineColor(sf::Color::White);
-        mistakes[i].setOutlineThickness(1.f);
-        mistakes[i].setPosition({width * 0.91f, height * 0.1f + width * 0.1f * i});
+        mistakes.push_back(sf::CircleShape(width * 0.04f));
+        mistakes.at(i).setFillColor(sf::Color::Transparent);
+        mistakes.at(i).setOutlineColor(sf::Color::White);
+        mistakes.at(i).setOutlineThickness(1.f);
+        mistakes.at(i).setPosition({width * 0.91f, height * 0.1f + width * 0.1f * i});
     }
 
     timer.restart();
@@ -179,7 +221,12 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             window->close();
         }
 
+        if (time - timer.getElapsedTime().asSeconds() < 30) {
+            display.setColor(sf::Color::Red);
+        }
+
         if (seconds != std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60)) {
+            beep.play();
             if (int(time - timer.getElapsedTime().asSeconds()) % 60 < 10) {
                 seconds = "0" + std::to_string(int(time - timer.getElapsedTime().asSeconds()) % 60);
             } else {
@@ -207,7 +254,7 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
                 mistakesCount[i] = modules[i]->getMistakes();
                 statuses[i].setFillColor(sf::Color(255, 0, 0, 230));
             } else {
-                statuses[i].setFillColor(sf::Color(255, 0, 0, std::make_unsigned_t<int>(statuses[i].getFillColor().a * 0.999f)));
+                statuses[i].setFillColor(sf::Color(255, 0, 0, std::make_unsigned_t<int>(statuses[i].getFillColor().a * 0.99f)));
             }
         }
 
@@ -216,9 +263,9 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             window->draw(statuses[i]);
             if (i < maxMistakes) {
                 if (i < amtMistakes) {
-                    mistakes[i].setFillColor(sf::Color::Red);
+                    mistakes.at(i).setFillColor(sf::Color::Red);
                 }
-                window->draw(mistakes[i]);
+                window->draw(mistakes.at(i));
             }
         }
         display.render(window);
@@ -232,6 +279,7 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
     if (wining) {
         win(time - timer.getElapsedTime().asSeconds());
     } else {
+        boom.play();
         lose(neutralizedCount);
     }
 }
@@ -243,7 +291,16 @@ void startGame() {
     float height = window->getSize().y;
     float uSize = (width + height) / 2;
     window->setFramerateLimit(60);
-    int m[6], buffer[2];
+    int m[6]{0}, buffer[2]{0};
+
+    sf::SoundBuffer clickBuf("click.wav");
+    sf::Sound click(clickBuf);
+    click.setVolume(20.f);
+
+    ParticleSystem particles(7000);
+
+    sf::Clock clock;
+
     bool startGame = false;
     int activeButton = -1;
 
@@ -258,24 +315,24 @@ void startGame() {
     buttons[2]->setFillColor(sf::Color::Transparent);
 
     Button startButton{{font, "Начать", sf::Color::White}, {width * 0.55f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color(80, 80, 80)},
-        exitButton{{font, "Выход", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
+        exitButton{{font, "Назад", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
         easyButton{{font, "Легкий", sf::Color::White}, buttons[0]},
         mediumButton{{font, "Средний", sf::Color::White}, buttons[1]},
         hardButton{{font, "Сложный", sf::Color::White}, buttons[2]};
-
+  
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
-            if (event->is<sf:: Event::Closed>()) {
+            if (event->is<sf::Event::Closed>()) {
                 window->close();
-            } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>())
-            {
+            } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
                 if (startButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && activeButton != -1) {
+                    click.play();
                     int haveModule[6]{0};
                     for (int i = 0; i < (activeButton + 1) * 2; i++) {
-                        int currentModule = rand() % 2 + 1;
-                        /*while (haveModule[currentModule]) {
-                            currentModule = rand() % 1 + 1;
-                        }*/ // TODO раскомментить когда модулей будет 6
+                        int currentModule = rand() % 3 + 1;
+                        while (haveModule[currentModule]) {
+                            currentModule = rand() % 3 + 1;
+                        } // TODO раскомментить когда модулей будет 6
                         haveModule[currentModule] = 1;
                         m[i] = currentModule;
                     }
@@ -288,20 +345,24 @@ void startGame() {
                     startGame = true;
                     window->close();
                 } else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
                     window->close();
                 } else if (easyButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
                     easyButton.getLabel()->setColor(sf::Color::Magenta);
                     mediumButton.getLabel()->setColor(sf::Color::White);
                     hardButton.getLabel()->setColor(sf::Color::White);
                     activeButton = 0;
                     startButton.getShape()->setFillColor(sf::Color::Magenta);
                 } else if (mediumButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
                     easyButton.getLabel()->setColor(sf::Color::White);
                     mediumButton.getLabel()->setColor(sf::Color::Magenta);
                     hardButton.getLabel()->setColor(sf::Color::White);
                     activeButton = 1;
                     startButton.getShape()->setFillColor(sf::Color::Magenta);
                 } else if (hardButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
                     easyButton.getLabel()->setColor(sf::Color::White);
                     mediumButton.getLabel()->setColor(sf::Color::White);
                     hardButton.getLabel()->setColor(sf::Color::Magenta);
@@ -310,6 +371,13 @@ void startGame() {
                 }
             }
         }
+
+        sf::Vector2i mouse = sf::Mouse::getPosition(*window);
+        particles.setEmitter(window->mapPixelToCoords(mouse));
+
+        sf::Time elapsed = clock.restart();
+        particles.update(elapsed);
+
         window->clear(sf::Color::Black);
 
         startButton.render(window);
@@ -317,6 +385,7 @@ void startGame() {
         easyButton.render(window);
         mediumButton.render(window);
         hardButton.render(window);
+        window->draw(particles);
 
         window->display();
     }
@@ -330,35 +399,100 @@ void startGame() {
     }
 }
 
-int main() { // Это стартовое меню. Пока оно просто ждет нажатие в себя.
-    unsigned int width = 640;
-    unsigned int height = 360;
-    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width, height }), "235seconds");
+int main() { // Это стартовое меню.
+    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode::getFullscreenModes()[0], "235seconds", sf::Style::None, sf::State::Fullscreen);
     window->setFramerateLimit(60);
 
-    while (window->isOpen()) {
-        while (const std::optional event = window->pollEvent()) {
-            if (event->is<sf::Event::Closed>()) {
+    unsigned int width = window->getSize().x;
+    unsigned int height = window->getSize().y;
+    if (!bool(music.getStatus())) {
+        music = sf::Music("music.wav");
+        music.setVolume(35.f);
+        music.setLooping(true);
+        music.play();
+    }
+    sf::SoundBuffer clickBuf("click.wav");
+    sf::Sound click(clickBuf);
+    click.setVolume(20.f);
+
+    bool ifPlay = false;
+
+    Label gameName (font, "235 seconds", sf::Color::White, height * 0.1f);
+    gameName.setPositionCenter(sf::Vector2f(width * 0.5f, height * 0.06f));
+
+    Button playButton(Label(font, "Играть", sf::Color::White), sf::Vector2f(0.f, 0.f), sf::Vector2f(width * 0.1f, height * 0.1f), sf::Color::Magenta);
+    playButton.getShape()->setOrigin(playButton.getShape()->getGeometricCenter());
+    playButton.getShape()->setPosition({width * 0.5f, height * 0.7f});
+    playButton.reloadLabel();
+
+    Button exitButton(Label(font, "Выход", sf::Color::White), sf::Vector2f(0.f, 0.f),sf::Vector2f(width * 0.1f, height * 0.1f), sf::Color::Magenta);
+    exitButton.getShape()->setOrigin(playButton.getShape()->getGeometricCenter());
+    exitButton.getShape()->setPosition({width * 0.5f, height * 0.85f});
+    exitButton.reloadLabel();
+
+    Label instruction(font, "Инструкция", sf::Color::White, height * 0.05f);
+    instruction.setPositionCenter(sf::Vector2f(width * 0.5f, height * 0.2f));
+
+    sf::Texture qrImage("qr.png", false, sf::IntRect({0, 0}, {400, 400}));
+    sf::Sprite qr(qrImage);
+    qr.setTextureRect(sf::IntRect({0, 0}, {400, 400}));
+    qr.setScale(sf::Vector2f(height * 0.3f / 400.f, height * 0.3f / 400.f));
+    qr.setOrigin(qr.getLocalBounds().getCenter());
+    qr.setPosition(sf::Vector2f(width * 0.5f, height * 0.4f));
+
+    ParticleSystem particles(7000);
+
+    sf::Clock clock;
+
+    bool isMouseMove = false;
+
+    while (window->isOpen())
+    {
+        while (const std::optional event = window->pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+            {
                 window->close();
-            } else if (const auto* resized = event->getIf<sf::Event::Resized>())
+                return 0;
+            }
+            else if (playButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && isMouseMove)
             {
-                sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
-                window->setView(sf::View(visibleArea));
-            } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>())
-            {
+                click.play();
+                ifPlay = true;
                 window->close();
             }
+            else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && isMouseMove)
+            {
+                click.play();
+                window->close();
+            } else if (event->is<sf::Event::MouseMovedRaw>()) {
+                isMouseMove = true;
+            }
         }
-        window->clear(sf::Color::White);
 
-        //window->close();
+        sf::Vector2i mouse = sf::Mouse::getPosition(*window);
+        particles.setEmitter(window->mapPixelToCoords(mouse));
+
+        sf::Time elapsed = clock.restart();
+        particles.update(elapsed);
+
+        window->clear(sf::Color::Black);
+
+        gameName.render(window);
+        playButton.render(window);
+        exitButton.render(window);
+        instruction.render(window);
+        window->draw(particles);
+        window->draw(qr);
 
         window->display();
     }
     window->close();
     delete window;
 
-    startGame();
-
+    if (ifPlay)
+    {
+        startGame();
+    }
     return 0;
 }

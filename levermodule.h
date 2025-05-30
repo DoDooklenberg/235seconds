@@ -2,6 +2,7 @@
 #define LEVERMODULE_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "basemodule.h"
 
 class LeverModule : public BaseModule
@@ -16,6 +17,8 @@ private:
     sf::RectangleShape base2;
     sf::CircleShape circle;
     sf::RectangleShape stick;
+    sf::SoundBuffer LeverSoundBuffer;
+    sf::Sound LeverFlip;
 public:
     LeverModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);
     void process(sf::RenderWindow *window, int time);
