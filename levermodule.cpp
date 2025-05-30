@@ -50,7 +50,7 @@ int LeverModule::serialSum() // сумма цифр серийного номе�
 }
 
 LeverModule::LeverModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):
-    BaseModule(newOrigin, newSide, newSerial, newFont)
+    BaseModule(newOrigin, newSide, newSerial, newFont), buffer("LeverFlip.wav"), LeverFlip(buffer)
 {
     startPosition();
 
@@ -76,9 +76,6 @@ LeverModule::LeverModule(sf::Vector2f newOrigin, float newSide, std::string newS
 
 void LeverModule::process(sf::RenderWindow *window, int time)
 {
-    sf::SoundBuffer buffer("LeverFlip.wav");
-    sf::Sound LeverFlip(buffer);
-
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) // рычаг нажат
         && sf::Mouse::getPosition(* window).x > circle.getPosition().x - circle.getRadius()
         && sf::Mouse::getPosition(* window).x < circle.getPosition().x + circle.getRadius()
