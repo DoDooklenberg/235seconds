@@ -166,7 +166,7 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
         case 3:
             modules[i] = new LeverModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
-        case 3:
+        case 4:
             modules[i] = new ClickerModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         default:
@@ -329,9 +329,9 @@ void startGame() {
                     click.play();
                     int haveModule[6]{0};
                     for (int i = 0; i < (activeButton + 1) * 2; i++) {
-                        int currentModule = rand() % 3 + 1;
+                        int currentModule = rand() % 4 + 1;
                         while (haveModule[currentModule]) {
-                            currentModule = rand() % 3 + 1;
+                            currentModule = rand() % 4 + 1;
                         } // TODO раскомментить когда модулей будет 6
                         haveModule[currentModule] = 1;
                         m[i] = currentModule;
@@ -392,7 +392,6 @@ void startGame() {
     window->close();
     delete window;
     if (startGame) {
-        m[0] = 3;
         game(235, m, (activeButton - 2) * -1);
     } else {
         main();

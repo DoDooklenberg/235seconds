@@ -1,5 +1,4 @@
 ﻿#include "clickermodule.h"
-#include <iostream>
 
 ClickerModule::ClickerModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont) :
     BaseModule(newOrigin, newSide, newSerial, newFont),
@@ -28,8 +27,7 @@ void ClickerModule::setCorrectClickAmount()
 
         }
 
-    correctClickAmount = ((numSum * lettersCount) + numbersCount * 5) % 101;
-    std::cout << correctClickAmount << std::endl;
+    correctClickAmount = ((numSum * lettersCount) + numbersCount * 5) % 100;
 }
 
 void ClickerModule::process(sf::RenderWindow *window, int time)

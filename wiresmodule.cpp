@@ -234,20 +234,13 @@ void WiresModule::render(sf::RenderWindow *window)
 
     window->draw(vertices.data(), vertices.size(), sf::PrimitiveType::LineStrip);
 
-    sf::Texture wireTexture_0_cut("WireSprite_1_cut.png");
-    sf::Texture wireTexture_0("WireSprite_1.png");
-    sf::Texture wireTexture_1_cut("WireSprite_2_cut.png");
-    sf::Texture wireTexture_1("WireSprite_2.png");
-    sf::Texture wireTexture_2_cut("WireSprite_3_cut.png");
-    sf::Texture wireTexture_2("WireSprite_3.png");
-    sf::Texture wireTexture_3_cut("WireSprite_3_cut.png");
-    sf::Texture wireTexture_3("WireSprite_3.png");
-    sf::Texture wireTexture_4_cut("WireSprite_4_cut.png");
-    sf::Texture wireTexture_4("WireSprite_4.png");
+    sf::Texture wireTexture_0_cut("WireSprite_1_cut.png"), wireTexture_0("WireSprite_1.png"),
+    wireTexture_1_cut("WireSprite_2_cut.png"), wireTexture_1("WireSprite_2.png"),
+    wireTexture_2_cut("WireSprite_3_cut.png"), wireTexture_2("WireSprite_3.png"),
+    wireTexture_3_cut("WireSprite_3_cut.png"), wireTexture_3("WireSprite_3.png"),
+    wireTexture_4_cut("WireSprite_4_cut.png"), wireTexture_4("WireSprite_4.png");
 
-
-    sf::Texture backPlateTexture("BackPlate.png");
-    sf::Texture frontPlateTexture("FrontPlate.png");
+    sf::Texture backPlateTexture("BackPlate.png"), frontPlateTexture("FrontPlate.png");
 
 
     sf::RectangleShape backPlate({side / 3, side / 3});
