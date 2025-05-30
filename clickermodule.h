@@ -2,6 +2,7 @@
 #define CLICKERMODULE_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "button.h"
 #include "basemodule.h"
 #include "label.h"
@@ -20,7 +21,8 @@ private:
     Button confirmButton;
     unsigned int count = 0;
     Label displayCount;
-
+    sf::SoundBuffer clickBuf;
+    sf::Sound click;
     bool isMousePressedLastFrame = false;
     bool isMousePressedLastFrame_2 = false;
 
