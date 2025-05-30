@@ -48,7 +48,37 @@ void win(int time) {
     delete window;
 };
 
-void lose(int neutralized) {} // Заглушка
+void lose(int neutralized) {
+    unsigned int width = 1280;
+    unsigned int height = 720;
+    sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width, height }), "Winning window",sf::Style::None);
+    window->setFramerateLimit(60);
+    sf::sleep(sf::milliseconds(200));
+
+    Label message(font, "Вы не выжили!", sf::Color::White, 100);
+    message.setPositionCenter({width * 0.5f, height * 0.5f});
+
+    while (window->isOpen()) {
+        while (const std::optional event = window->pollEvent()) {
+            if (event->is<sf:: Event::Closed>()) {
+                window->close();
+            }  else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->scancode == sf::Keyboard::Scan::Escape)
+                {
+                    window->close();
+                }
+            }
+        }
+        window->clear(sf::Color::Black);
+
+        message.render(window);
+
+        window->display();
+    }
+    window->close();
+    delete window;
+}
 
 void game(int time, int moduleUIDs[6], int maxMistakes) {
     music.stop();
@@ -58,8 +88,8 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
     float height = window->getSize().y;
     float uSize = (width + height) / 2;
 
-    sf::SoundBuffer beepBuf("beep.wav");
-    sf::Sound beep(beepBuf);
+    sf::SoundBuffer beepBuf("beep.wav"), boomBuf("boom.wav");
+    sf::Sound beep(beepBuf), boom(boomBuf);
 
     Label infoText(font, "Загрузка...", sf::Color::White, uSize * 0.12f);
     infoText.setPositionCenter({ width * 0.5f, height * 0.5f });
@@ -245,6 +275,7 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
     if (wining) {
         win(time - timer.getElapsedTime().asSeconds());
     } else {
+        boom.play();
         lose(neutralizedCount);
     }
 }
@@ -257,6 +288,10 @@ void startGame() {
     float uSize = (width + height) / 2;
     window->setFramerateLimit(60);
     int m[6]{0}, buffer[2]{0};
+
+    sf::SoundBuffer clickBuf("click.wav");
+    sf::Sound click(clickBuf);
+    click.setVolume(20.f);
 
     ParticleSystem particles(7000);
 
@@ -287,6 +322,7 @@ void startGame() {
                 window->close();
             } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
                 if (startButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && activeButton != -1) {
+                    click.play();
                     int haveModule[6]{0};
                     for (int i = 0; i < (activeButton + 1) * 2; i++) {
                         int currentModule = rand() % 3 + 1;
@@ -305,20 +341,24 @@ void startGame() {
                     startGame = true;
                     window->close();
                 } else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
                     window->close();
                 } else if (easyButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
                     easyButton.getLabel()->setColor(sf::Color::Magenta);
                     mediumButton.getLabel()->setColor(sf::Color::White);
                     hardButton.getLabel()->setColor(sf::Color::White);
                     activeButton = 0;
                     startButton.getShape()->setFillColor(sf::Color::Magenta);
                 } else if (mediumButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
                     easyButton.getLabel()->setColor(sf::Color::White);
                     mediumButton.getLabel()->setColor(sf::Color::Magenta);
                     hardButton.getLabel()->setColor(sf::Color::White);
                     activeButton = 1;
                     startButton.getShape()->setFillColor(sf::Color::Magenta);
                 } else if (hardButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
                     easyButton.getLabel()->setColor(sf::Color::White);
                     mediumButton.getLabel()->setColor(sf::Color::White);
                     hardButton.getLabel()->setColor(sf::Color::Magenta);
@@ -361,11 +401,14 @@ int main() { // Это стартовое меню.
     unsigned int width = window->getSize().x;
     unsigned int height = window->getSize().y;
     if (!bool(music.getStatus())) {
-        music.openFromFile("music.wav");
+        music = sf::Music("music.wav");
         music.setVolume(35.f);
         music.setLooping(true);
         music.play();
     }
+    sf::SoundBuffer clickBuf("click.wav");
+    sf::Sound click(clickBuf);
+    click.setVolume(20.f);
 
     bool ifPlay = false;
 
@@ -409,11 +452,13 @@ int main() { // Это стартовое меню.
             }
             else if (playButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && isMouseMove)
             {
+                click.play();
                 ifPlay = true;
                 window->close();
             }
             else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && isMouseMove)
             {
+                click.play();
                 window->close();
             } else if (event->is<sf::Event::MouseMovedRaw>()) {
                 isMouseMove = true;
