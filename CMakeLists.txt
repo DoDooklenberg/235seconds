@@ -36,6 +36,7 @@ add_executable(main main.cpp
     wiresmodule.cpp wiresmodule.h
     drawwires.cpp drawwires.h
     button.h button.cpp
+    clickermodule.h clickermodule.cpp
     drawingmodule.cpp drawingmodule.h
     drawingpoint.cpp drawingpoint.h
     particlesystem.h particlesystem.cpp

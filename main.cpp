@@ -10,6 +10,7 @@
 #include <iostream>
 #include "particlesystem.h"
 #include "levermodule.h"
+#include "clickermodule.h"
 
 const sf::Font font("font.ttf");
 sf::Music music;
@@ -164,6 +165,9 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             break;
         case 3:
             modules[i] = new LeverModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
+            break;
+        case 3:
+            modules[i] = new ClickerModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         default:
             modules[i] = new BaseModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
@@ -388,6 +392,7 @@ void startGame() {
     window->close();
     delete window;
     if (startGame) {
+        m[0] = 3;
         game(235, m, (activeButton - 2) * -1);
     } else {
         main();
