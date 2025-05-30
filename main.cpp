@@ -1,9 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <vector>
 #include "label.h"
 #include "button.h"
 #include "basemodule.h"
 #include "drawingmodule.h"
+#include "wiresmodule.h"
 #include <iostream>
 #include "particlesystem.h"
 #include "levermodule.h"
@@ -122,6 +124,9 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             modules[i] = new DrawingModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         case 2:
+            modules[i] = new WiresModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
+            break;
+        case 3:
             modules[i] = new LeverModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         default:
@@ -138,16 +143,15 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
          sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
          sf::Vertex{{origin.x  - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
          };
-
-    sf::CircleShape mistakes[maxMistakes];
+    std::vector<sf::CircleShape> mistakes;
     int amtMistakes = 0;
 
     for (short i = 0; i < maxMistakes; i++) {
-        mistakes[i] = sf::CircleShape(width * 0.035f);
-        mistakes[i].setFillColor(sf::Color::Transparent);
-        mistakes[i].setOutlineColor(sf::Color::White);
-        mistakes[i].setOutlineThickness(1.f);
-        mistakes[i].setPosition({width * 0.92f, height * 0.1f + width * 0.1f * i});
+        mistakes.push_back(sf::CircleShape(width * 0.04f));
+        mistakes.at(i).setFillColor(sf::Color::Transparent);
+        mistakes.at(i).setOutlineColor(sf::Color::White);
+        mistakes.at(i).setOutlineThickness(1.f);
+        mistakes.at(i).setPosition({width * 0.91f, height * 0.1f + width * 0.1f * i});
     }
 
     timer.restart();
@@ -214,9 +218,9 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             window->draw(statuses[i]);
             if (i < maxMistakes) {
                 if (i < amtMistakes) {
-                    mistakes[i].setFillColor(sf::Color::Red);
+                    mistakes.at(i).setFillColor(sf::Color::Red);
                 }
-                window->draw(mistakes[i]);
+                window->draw(mistakes.at(i));
             }
         }
         display.render(window);
@@ -241,13 +245,9 @@ void startGame() {
     float height = window->getSize().y;
     float uSize = (width + height) / 2;
     window->setFramerateLimit(60);
-    int m[6], buffer[2];
+    int m[6]{0}, buffer[2]{0};
     bool startGame = false;
     int activeButton = -1;
-
-    ParticleSystem particles(7000);
-
-    sf::Clock clock;
 
     sf::RectangleShape* buttons[3]{new sf::RectangleShape{{width * 0.4f, height * 0.1f}},
                                    new sf::RectangleShape{{width * 0.4f, height * 0.1f}},
@@ -260,17 +260,20 @@ void startGame() {
     buttons[2]->setFillColor(sf::Color::Transparent);
 
     Button startButton{{font, "Начать", sf::Color::White}, {width * 0.55f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color(80, 80, 80)},
-        exitButton{{font, "Назад", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
+        exitButton{{font, "Выход", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
         easyButton{{font, "Легкий", sf::Color::White}, buttons[0]},
         mediumButton{{font, "Средний", sf::Color::White}, buttons[1]},
         hardButton{{font, "Сложный", sf::Color::White}, buttons[2]};
-
+  
     while (window->isOpen()) {
         while (const std::optional event = window->pollEvent()) {
-            if (event->is<sf:: Event::Closed>()) {
+            if (event->is<sf::Event::Closed>()) {
                 window->close();
             } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>())
             {
+                sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
+                window->setView(sf::View(visibleArea));
+            } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>())
                 if (startButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && activeButton != -1) {
                     int haveModule[6]{0};
                     for (int i = 0; i < (activeButton + 1) * 2; i++) {
