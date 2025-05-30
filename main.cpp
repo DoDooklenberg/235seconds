@@ -209,7 +209,7 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
                 mistakesCount[i] = modules[i]->getMistakes();
                 statuses[i].setFillColor(sf::Color(255, 0, 0, 230));
             } else {
-                statuses[i].setFillColor(sf::Color(255, 0, 0, std::make_unsigned_t<int>(statuses[i].getFillColor().a * 0.999f)));
+                statuses[i].setFillColor(sf::Color(255, 0, 0, std::make_unsigned_t<int>(statuses[i].getFillColor().a * 0.99f)));
             }
         }
 
@@ -246,6 +246,11 @@ void startGame() {
     float uSize = (width + height) / 2;
     window->setFramerateLimit(60);
     int m[6]{0}, buffer[2]{0};
+
+    ParticleSystem particles(7000);
+
+    sf::Clock clock;
+
     bool startGame = false;
     int activeButton = -1;
 
@@ -260,7 +265,7 @@ void startGame() {
     buttons[2]->setFillColor(sf::Color::Transparent);
 
     Button startButton{{font, "Начать", sf::Color::White}, {width * 0.55f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color(80, 80, 80)},
-        exitButton{{font, "Выход", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
+        exitButton{{font, "Назад", sf::Color::White}, {width * 0.35f, height * 0.85f}, {uSize * 0.12f, uSize * 0.06f}, sf::Color::Magenta},
         easyButton{{font, "Легкий", sf::Color::White}, buttons[0]},
         mediumButton{{font, "Средний", sf::Color::White}, buttons[1]},
         hardButton{{font, "Сложный", sf::Color::White}, buttons[2]};
@@ -269,18 +274,14 @@ void startGame() {
         while (const std::optional event = window->pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window->close();
-            } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>())
-            {
-                sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
-                window->setView(sf::View(visibleArea));
-            } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>())
+            } else if (const auto* mouse = event->getIf<sf::Event::MouseButtonPressed>()) {
                 if (startButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && activeButton != -1) {
                     int haveModule[6]{0};
                     for (int i = 0; i < (activeButton + 1) * 2; i++) {
                         int currentModule = rand() % 2 + 1;
-                        /*while (haveModule[currentModule]) {
+                        while (haveModule[currentModule]) {
                             currentModule = rand() % 1 + 1;
-                        }*/ // TODO раскомментить когда модулей будет 6
+                        } // TODO раскомментить когда модулей будет 6
                         haveModule[currentModule] = 1;
                         m[i] = currentModule;
                     }

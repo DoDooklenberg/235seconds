@@ -31,7 +31,7 @@ add_executable(main main.cpp
     drawwires.cpp drawwires.h
     button.h button.cpp
     drawingmodule.cpp drawingmodule.h
-    drawingpoint.cpp drawingpoint.h)
+    drawingpoint.cpp drawingpoint.h
     particlesystem.h particlesystem.cpp
     levermodule.h levermodule.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
