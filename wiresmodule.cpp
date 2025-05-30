@@ -2,6 +2,7 @@
 #include <iostream>
 #include "basemodule.h"
 #include <vector>
+#include <SFML/Audio.hpp>
 
 WiresModule::WiresModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont):
     BaseModule(newOrigin, newSide, newSerial, newFont)
@@ -175,16 +176,17 @@ bool WiresModule::WiresPosCheck(sf::Vector2f cursor)
 }
 void WiresModule::process(sf::RenderWindow *window, int time)
 {
+
     if (isDone == false) {
+
+        sf::SoundBuffer buffer("WireCut.wav");
+        sf::Sound WireCut(buffer);
 
             if (WiresPosCheck(sf::Vector2f(sf::Mouse::getPosition()))) {
                 if (Wires.at(mouseOnWire).wireIsCut == false) {
-                    const auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Hand).value();
-                    window->setMouseCursor(cursor);
 
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-                        const auto cursor = sf::Cursor::createFromSystem(sf::Cursor::Type::Arrow).value();
-                        window->setMouseCursor(cursor);
+                        WireCut.play();
                         Wires.at(mouseOnWire).wireIsCut = true;
                             if (Wires.at(mouseOnWire).isCorrect == true) {
                                 correctWireCut++;

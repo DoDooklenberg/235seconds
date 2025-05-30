@@ -1,4 +1,5 @@
 #include "levermodule.h"
+#include <SFML/Audio.hpp>
 
 void LeverModule::randWin() // случайная победа
 {
@@ -75,12 +76,16 @@ LeverModule::LeverModule(sf::Vector2f newOrigin, float newSide, std::string newS
 
 void LeverModule::process(sf::RenderWindow *window, int time)
 {
+    sf::SoundBuffer buffer("LeverFlip.wav");
+    sf::Sound LeverFlip(buffer);
+
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) // рычаг нажат
         && sf::Mouse::getPosition(* window).x > circle.getPosition().x - circle.getRadius()
         && sf::Mouse::getPosition(* window).x < circle.getPosition().x + circle.getRadius()
         && sf::Mouse::getPosition(* window).y > stick.getPosition().y - circle.getRadius()
         && sf::Mouse::getPosition(* window).y < stick.getPosition().y + stick.getSize().y)
     {
+        LeverFlip.play();
         if (isDone == false && circle.getPosition() == stick.getPosition())
         {
             stick.setPosition(stick.getPosition() + sf::Vector2f(0.f, stick.getSize().y)); // рычаг опускается

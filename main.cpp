@@ -278,9 +278,9 @@ void startGame() {
                 if (startButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && activeButton != -1) {
                     int haveModule[6]{0};
                     for (int i = 0; i < (activeButton + 1) * 2; i++) {
-                        int currentModule = rand() % 2 + 1;
+                        int currentModule = rand() % 3 + 1;
                         while (haveModule[currentModule]) {
-                            currentModule = rand() % 1 + 1;
+                            currentModule = rand() % 3 + 1;
                         } // TODO раскомментить когда модулей будет 6
                         haveModule[currentModule] = 1;
                         m[i] = currentModule;

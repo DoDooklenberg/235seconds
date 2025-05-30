@@ -14,6 +14,8 @@ file(COPY BackPlate.png DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY FrontPlate.png DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY font.ttf DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY qr.png DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY WireCut.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY LeverFlip.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 include(FetchContent)
 FetchContent_Declare(SFML
@@ -36,3 +38,4 @@ add_executable(main main.cpp
     levermodule.h levermodule.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)
+target_link_libraries(main PRIVATE SFML::Audio)
