@@ -51,6 +51,7 @@ void ClickerModule::process(sf::RenderWindow *window, int time)
         if (confirmButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
             confirmButton.getLabel()->setColor(sf::Color::Green);
             if (!isMousePressedLastFrame_2) {
+                click.play();
                 if (count == correctClickAmount) {
                     isDone = true;
                 }

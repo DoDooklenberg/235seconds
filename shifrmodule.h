@@ -4,6 +4,7 @@
 #include "basemodule.h"
 #include "button.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "label.h"
 #include <map>
 
@@ -18,6 +19,8 @@ private:
     bool justPressed = false;
     Button code;
     Button buttons[6], agree;
+    sf::SoundBuffer clickBuf;
+    sf::Sound click;
     std::string words[12]{"ДОМ", "КОТ", "ПИР", "ЛУК", "СЫТ", "БАК", "ВЕС", "ЖАР", "ГУБ", "ЧАС", "ЩУК", "ФЕН"};
     std::string letters[3][12]{
         {"Щ", "Г", "В", "Ч", "К", "Б", "Ж", "Ф", "П", "Л", "С", "Д"},

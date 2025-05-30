@@ -2,6 +2,7 @@
 
 ShifrModule::ShifrModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont) :
     BaseModule(newOrigin, newSide, newSerial, newFont),
+    clickBuf{"click.wav"}, click(clickBuf),
     buttons{Button(Label(font, ".", sf::Color::White), origin + sf::Vector2f(side * 0.1f + side * 0.3f * 0, side * 0.3f), sf::Vector2f(side * 0.2f, side * 0.2f), sf::Color::Magenta),
             Button(Label(font, ".", sf::Color::White), origin + sf::Vector2f(side * 0.1f + side * 0.3f * 1, side * 0.3f), sf::Vector2f(side * 0.2f, side * 0.2f), sf::Color::Magenta),
             Button(Label(font, ".", sf::Color::White), origin + sf::Vector2f(side * 0.1f + side * 0.3f * 2, side * 0.3f), sf::Vector2f(side * 0.2f, side * 0.2f), sf::Color::Magenta),
@@ -18,6 +19,8 @@ ShifrModule::ShifrModule(sf::Vector2f newOrigin, float newSide, std::string newS
         currentLet[i] = rand() % 12;
     }
     generateWords();
+    click.setVolume(20.f);
+
 }
 
 void ShifrModule::process(sf::RenderWindow *window, int time)
@@ -27,6 +30,7 @@ void ShifrModule::process(sf::RenderWindow *window, int time)
             if (!justPressed) {
                 for (int i = 0; i < 6; i++) {
                     if (buttons[i].isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                        click.play();
                         currentLet[i] += 1;
                         currentLet[i] %= 12;
                         buttons[i].getLabel()->setString(letters[i % 3][currentLet[i]]);
@@ -34,6 +38,7 @@ void ShifrModule::process(sf::RenderWindow *window, int time)
                     }
                 }
                 if (agree.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
+                    click.play();
                     for (int i = 0; i < 6; i++) {
                         if (i % 3 == 1) {
                             if (words[correctWords[(i + 1) % 2]].substr((i % 3) * 2, ((i % 3) + 1) * 2).substr(0, 2) != letters[i % 3][currentLet[i]]) {
