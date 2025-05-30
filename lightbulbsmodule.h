@@ -21,8 +21,8 @@ private:
 
 public:
     LightBulbsModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);
-    void process(sf::RenderWindow *window, int time) override;
-    void render(sf::RenderWindow *window) override;
+    void process(sf::RenderWindow* window, int time) override;
+    void render(sf::RenderWindow* window) override;
 };
 
 #endif
