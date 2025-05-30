@@ -7,7 +7,6 @@
 #include "basemodule.h"
 #include "drawingmodule.h"
 #include "wiresmodule.h"
-#include <iostream>
 #include "particlesystem.h"
 #include "levermodule.h"
 #include "clickermodule.h"
@@ -403,7 +402,6 @@ void startGame() {
     window->close();
     delete window;
     if (startGame) {
-        m[0] = 1;
         game(235, m, (activeButton - 2) * -1);
     } else {
         main();
@@ -426,7 +424,7 @@ int main() { // Это стартовое меню.
     sf::Sound click(clickBuf);
     click.setVolume(20.f);
 
-    bool ifPlay = false;
+    bool ifPlay = true;
 
     Label gameName (font, "235 seconds", sf::Color::White, height * 0.1f);
     gameName.setPositionCenter(sf::Vector2f(width * 0.5f, height * 0.06f));
@@ -455,8 +453,6 @@ int main() { // Это стартовое меню.
 
     sf::Clock clock;
 
-    bool isMouseMove = false;
-
     while (window->isOpen())
     {
         while (const std::optional event = window->pollEvent())
@@ -466,18 +462,17 @@ int main() { // Это стартовое меню.
                 window->close();
                 return 0;
             }
-            else if (playButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && isMouseMove)
+            else if (playButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
             {
                 click.play();
-                ifPlay = true;
                 window->close();
             }
-            else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && isMouseMove)
+            else if (exitButton.isPosIn(sf::Vector2f(sf::Mouse::getPosition(*window))) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
             {
                 click.play();
+                ifPlay = false;
+            } else if (!ifPlay) {
                 window->close();
-            } else if (event->is<sf::Event::MouseMovedRaw>()) {
-                isMouseMove = true;
             }
         }
 
