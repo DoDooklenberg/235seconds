@@ -24,6 +24,7 @@ file(COPY StringPull.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY error.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY done.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY win.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY lightbulb.wav DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 include(FetchContent)
 FetchContent_Declare(SFML

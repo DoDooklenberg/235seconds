@@ -3,6 +3,7 @@
 
 #include "basemodule.h"
 #include <array>
+#include <SFML/Audio.hpp>
 
 class LightBulbsModule : public BaseModule
 {
@@ -18,6 +19,10 @@ private:
     int clickCount;
     sf::Clock clickCooldown;
     int solvedCount;
+    sf::SoundBuffer lightBulbBuf;
+    sf::Sound lightbulbClick;
+    sf::SoundBuffer clickBuf;
+    sf::Sound click;
 
 public:
     LightBulbsModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);
