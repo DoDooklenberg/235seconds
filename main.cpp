@@ -12,6 +12,7 @@
 #include "levermodule.h"
 #include "clickermodule.h"
 #include "shifrmodule.h"
+#include <iostream>
 
 const sf::Font font("font.ttf");
 sf::Music music;
@@ -114,9 +115,9 @@ void lose(int neutralized, int difficulty) {
     int totalModules = (difficulty == 0) ? 2 : (difficulty == 1) ? 4 : 6;
 
 
-    int actualNeutralized = (neutralized > totalModules) ? totalModules : neutralized;
+    //int actualNeutralized = (neutralized > totalModules) ? totalModules : neutralized;
 
-    std::string modulesStr = "нейтрализовано модулей: " + std::to_string(actualNeutralized) + " из " + std::to_string(totalModules);
+    std::string modulesStr = "нейтрализовано модулей: " + std::to_string(neutralized - (6 - totalModules)) + " из " + std::to_string(totalModules);
     Label modulesLabel(font, modulesStr, sf::Color::White, 50);
     modulesLabel.setPositionCenter({ width * 0.5f, height * 0.65f });
 
@@ -269,6 +270,7 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             break;
         case 4:
             modules[i] = new LightBulbsModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
+            break;
         case 5:
             modules[i] = new ClickerModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
@@ -360,7 +362,6 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             if (modules[i]->getIsDone()) {
                 neutralizedCount++;
                 if (!modules[i]->getIsBase()) {
-                    done.play();
                     statuses[i].setFillColor(sf::Color(0, 255, 0, 128));
                 }
             }
@@ -449,12 +450,12 @@ void startGame() {
                     int haveModule[6]{ 0 };
                     int totalModules = (activeButton == 0) ? 2 : (activeButton == 1) ? 4 : 6;
                     for (int i = 0; i < totalModules; i++) {
-                        int currentModule = rand() % 6 + 1;
+                        int currentModule = rand() % 6;
                         while (haveModule[currentModule]) {
-                            currentModule = rand() % 6 + 1;
+                            currentModule = rand() % 6;
                         }
                         haveModule[currentModule] = 1;
-                        m[i] = currentModule;
+                        m[i] = currentModule + 1;
                     }
                     for (int i = totalModules; i < 6; i++) {
                         m[i] = 0;
@@ -560,10 +561,10 @@ int main() {
     Label instruction(font, "Инструкция", sf::Color::White, height * 0.05f);
     instruction.setPositionCenter(sf::Vector2f(width * 0.5f, height * 0.2f));
 
-    sf::Texture qrImage("qr.png", false, sf::IntRect({ 0, 0 }, { 400, 400 }));
+    sf::Texture qrImage("qr.png", false, sf::IntRect({ 0, 0 }, { 462, 462 }));
     sf::Sprite qr(qrImage);
-    qr.setTextureRect(sf::IntRect({ 0, 0 }, { 400, 400 }));
-    qr.setScale(sf::Vector2f(height * 0.3f / 400.f, height * 0.3f / 400.f));
+    qr.setTextureRect(sf::IntRect({ 0, 0 }, { 462, 462 }));
+    qr.setScale(sf::Vector2f(height * 0.3f / 462.f, height * 0.3f / 462.f));
     qr.setOrigin(qr.getLocalBounds().getCenter());
     qr.setPosition(sf::Vector2f(width * 0.5f, height * 0.4f));
 
