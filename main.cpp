@@ -6,6 +6,7 @@
 #include "button.h"
 #include "basemodule.h"
 #include "drawingmodule.h"
+#include "lightbulbsmodule.h"
 #include "wiresmodule.h"
 #include "particlesystem.h"
 #include "levermodule.h"
@@ -267,9 +268,11 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
             modules[i] = new LeverModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         case 4:
+            modules[i] = new LightBulbsModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
+        case 5:
             modules[i] = new ClickerModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
-        case 5:
+        case 6:
             modules[i] = new ShifrModule(origin + sf::Vector2f(moduleSide * 0.01f, moduleSide * 0.01f), moduleSide * 0.98f, serial, font);
             break;
         default:
@@ -279,13 +282,13 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
     }
     origin = { width * 0.5f, height * 0.5f };
     std::array border =
-    {
-     sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
-     sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
-     sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
-     sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
-     sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
-    };
+        {
+         sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+         sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+         sf::Vertex{{origin.x + moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
+         sf::Vertex{{origin.x - moduleSide * 1.51f, origin.y + moduleSide * 1.01f}},
+         sf::Vertex{{origin.x  - moduleSide * 1.51f, origin.y - moduleSide * 1.01f}},
+         };
     std::vector<sf::CircleShape> mistakes;
     int amtMistakes = 0;
 
@@ -446,9 +449,9 @@ void startGame() {
                     int haveModule[6]{ 0 };
                     int totalModules = (activeButton == 0) ? 2 : (activeButton == 1) ? 4 : 6;
                     for (int i = 0; i < totalModules; i++) {
-                        int currentModule = rand() % 5 + 1;
+                        int currentModule = rand() % 6 + 1;
                         while (haveModule[currentModule]) {
-                            currentModule = rand() % 5 + 1;
+                            currentModule = rand() % 6 + 1;
                         }
                         haveModule[currentModule] = 1;
                         m[i] = currentModule;
