@@ -161,7 +161,7 @@ void WiresModule::generateWires()
     for (int i = 0; i < amountOfWires; i++) {
         Wires.push_back(DrawWires(origin + sf::Vector2f(side/3, 30 + side/3 + step),
         sf::Vector2f(side/3, 15.f), getRandomColor(), false, false));
-        step += 30;
+        step += side * 0.08f;
     }
 
 }
@@ -184,7 +184,7 @@ void WiresModule::process(sf::RenderWindow *window, int time)
 
     if (isDone == false) {
 
-            if (WiresPosCheck(sf::Vector2f(sf::Mouse::getPosition()))) {
+            if (WiresPosCheck(sf::Vector2f(sf::Mouse::getPosition(*window)))) {
                 if (Wires.at(mouseOnWire).wireIsCut == false) {
 
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
