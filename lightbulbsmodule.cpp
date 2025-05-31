@@ -1,7 +1,9 @@
 #include "lightbulbsmodule.h"
 #include <cmath>
 
-LightBulbsModule::LightBulbsModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont) : BaseModule(newOrigin, newSide, newSerial, newFont)
+LightBulbsModule::LightBulbsModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont) :
+    BaseModule(newOrigin, newSide, newSerial, newFont), lightBulbBuf{"lightbulb.wav"}, lightbulbClick(lightBulbBuf),
+    clickBuf{"click.wav"}, click(clickBuf)
 {
     isBase = false;
 
@@ -76,6 +78,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
 
                     }
                     else if (!isHolding && clickCooldown.getElapsedTime().asSeconds() > 0.2f) {
+                        click.play();
                         isHolding = true;
                         holdingBulb = i;
                         holdTimer.restart();
@@ -85,6 +88,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
                         case 0: // Красная  нажать синюю
                             if (i == 1) {
                                 bulbs[activeBulb].setFillColor(sf::Color(colors[activeBulb].r / 3, colors[activeBulb].g / 3, colors[activeBulb].b / 3));
+                                lightbulbClick.play();
                                 activeBulb = -1;
                                 bulbTimer.restart();
                                 solvedCount++;
@@ -102,6 +106,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
                                 sequenceStep = 2;
                             }
                             else if (sequenceStep == 2 && i == 3) {
+                                lightbulbClick.play();
                                 bulbs[activeBulb].setFillColor(sf::Color(colors[activeBulb].r / 3, colors[activeBulb].g / 3, colors[activeBulb].b / 3));
                                 activeBulb = -1;
                                 bulbTimer.restart();
@@ -109,6 +114,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
                             }
                             else {
                                 mistakes++;
+                                lightbulbClick.play();
                                 bulbs[activeBulb].setFillColor(sf::Color(colors[activeBulb].r / 3, colors[activeBulb].g / 3, colors[activeBulb].b / 3));
                                 activeBulb = -1;
                                 bulbTimer.restart();
@@ -120,6 +126,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
                                 sequenceStep = 1;
                             }
                             else if (sequenceStep == 1 && i == 4) {
+                                lightbulbClick.play();
                                 bulbs[activeBulb].setFillColor(sf::Color(colors[activeBulb].r / 3, colors[activeBulb].g / 3, colors[activeBulb].b / 3));
                                 activeBulb = -1;
                                 bulbTimer.restart();
@@ -127,6 +134,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
                             }
                             else {
                                 mistakes++;
+                                lightbulbClick.play();
                                 bulbs[activeBulb].setFillColor(sf::Color(colors[activeBulb].r / 3, colors[activeBulb].g / 3, colors[activeBulb].b / 3));
                                 activeBulb = -1;
                                 bulbTimer.restart();
@@ -137,6 +145,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
                             if (i == 5) {
                                 clickCount++;
                                 if (clickCount >= 2) {
+                                    lightbulbClick.play();
                                     bulbs[activeBulb].setFillColor(sf::Color(colors[activeBulb].r / 3, colors[activeBulb].g / 3, colors[activeBulb].b / 3));
                                     activeBulb = -1;
                                     bulbTimer.restart();
@@ -145,6 +154,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
                             }
                             else {
                                 mistakes++;
+                                lightbulbClick.play();
                                 bulbs[activeBulb].setFillColor(sf::Color(colors[activeBulb].r / 3, colors[activeBulb].g / 3, colors[activeBulb].b / 3));
                                 activeBulb = -1;
                                 bulbTimer.restart();
@@ -153,6 +163,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
 
                         case 4: // Белая  нажать на белую
                             if (i == 4) {
+                                lightbulbClick.play();
                                 bulbs[activeBulb].setFillColor(sf::Color(colors[activeBulb].r / 3, colors[activeBulb].g / 3, colors[activeBulb].b / 3));
                                 activeBulb = -1;
                                 bulbTimer.restart();
@@ -160,6 +171,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
                             }
                             else {
                                 mistakes++;
+                                lightbulbClick.play();
                                 bulbs[activeBulb].setFillColor(sf::Color(colors[activeBulb].r / 3, colors[activeBulb].g / 3, colors[activeBulb].b / 3));
                                 activeBulb = -1;
                                 bulbTimer.restart();
@@ -167,6 +179,7 @@ void LightBulbsModule::process(sf::RenderWindow* window, int time)
                             break;
 
                         case 5: // Фиолетовая  нажать любую лампочку
+                            lightbulbClick.play();
                             bulbs[activeBulb].setFillColor(sf::Color(colors[activeBulb].r / 3, colors[activeBulb].g / 3, colors[activeBulb].b / 3));
                             activeBulb = -1;
                             bulbTimer.restart();
