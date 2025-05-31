@@ -2,13 +2,17 @@
 #define DRAWINGMODULE_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <vector>
 #include "basemodule.h"
 #include "drawingpoint.h"
+#include <SFML/Audio.hpp>
 
 class DrawingModule : public BaseModule
 {
 private:
+    sf::SoundBuffer stringSoundBuffer;
+    sf::Sound stringPull;
     std::vector<DrawingPoint> points;
     int currentPoint = 0, amt;
     int numbers_12[12]{4, 9, 1, 8, 2, 11, 6, 12, 3, 5, 7, 10},
