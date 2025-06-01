@@ -159,9 +159,9 @@ void WiresModule::generateWires()
     amountOfWires = rand()%3+2;
     int step = 0;
     for (int i = 0; i < amountOfWires; i++) {
-        Wires.push_back(DrawWires(origin + sf::Vector2f(side/3, 30 + side/3 + step),
-        sf::Vector2f(side/3, 15.f), getRandomColor(), false, false));
-        step += side * 0.08f;
+        Wires.push_back(DrawWires(origin + sf::Vector2f(side/3, side/25 + side/3 + step),
+        sf::Vector2f(side/3, side/25), getRandomColor(), false, false));
+        step += side/15;
     }
 
 }

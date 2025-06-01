@@ -12,7 +12,6 @@
 #include "levermodule.h"
 #include "clickermodule.h"
 #include "shifrmodule.h"
-#include <iostream>
 
 const sf::Font font("font.ttf");
 sf::Music music;
@@ -20,16 +19,15 @@ sf::Music music;
 int main();
 
 void win(int time) {
-    unsigned int width = 1280;
-    unsigned int height = 720;
+    unsigned int width = unsigned(sf::VideoMode::getFullscreenModes()[0].size.x * 0.67);
+    unsigned int height = unsigned(sf::VideoMode::getFullscreenModes()[0].size.y * 0.67);
     sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode({ width, height }), "Winning window", sf::Style::None);
     window->setFramerateLimit(60);
-    sf::sleep(sf::milliseconds(200));
 
-    Label message(font, "Вы выжили!", sf::Color::White, 100);
+    Label message(font, "Вы выжили!", sf::Color::White, width / 15);
     message.setPositionCenter({ width * 0.5f, height * 0.5f });
 
-    std::string timeStr = "время: ";
+    std::string timeStr = "Время: ";
     if (time / 60 < 10) {
         timeStr += "0" + std::to_string(time / 60) + ":";
     }
@@ -43,7 +41,7 @@ void win(int time) {
         timeStr += std::to_string(time % 60);
     }
 
-    Label timeLabel(font, timeStr, sf::Color::White, 50);
+    Label timeLabel(font, timeStr, sf::Color::White, width / 40);
     timeLabel.setPositionCenter({ width * 0.5f, height * 0.35f });
 
     Button exitButton(Label(font, "Выход", sf::Color::White),
@@ -102,23 +100,20 @@ void win(int time) {
 }
 
 void lose(int neutralized, int difficulty) {
-    unsigned int width = 1280;
-    unsigned int height = 720;
+    unsigned int width = unsigned(sf::VideoMode::getFullscreenModes()[0].size.x * 0.67);
+    unsigned int height = unsigned(sf::VideoMode::getFullscreenModes()[0].size.y * 0.67);
     sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode({ width, height }), "Winning window", sf::Style::None);
     window->setFramerateLimit(60);
-    sf::sleep(sf::milliseconds(200));
 
-    Label message(font, "Вы проиграли!", sf::Color::White, 100);
+    Label message(font, "Вы проиграли!", sf::Color::White, width / 15);
     message.setPositionCenter({ width * 0.5f, height * 0.5f });
 
 
     int totalModules = (difficulty == 0) ? 2 : (difficulty == 1) ? 4 : 6;
 
 
-    //int actualNeutralized = (neutralized > totalModules) ? totalModules : neutralized;
-
-    std::string modulesStr = "нейтрализовано модулей: " + std::to_string(neutralized - (6 - totalModules)) + " из " + std::to_string(totalModules);
-    Label modulesLabel(font, modulesStr, sf::Color::White, 50);
+    std::string modulesStr = "Нейтрализовано модулей: " + std::to_string(neutralized - (6 - totalModules)) + " из " + std::to_string(totalModules);
+    Label modulesLabel(font, modulesStr, sf::Color::White, width / 40);
     modulesLabel.setPositionCenter({ width * 0.5f, height * 0.65f });
 
     Button exitButton(Label(font, "Выход", sf::Color::White),
@@ -295,11 +290,11 @@ void game(int time, int moduleUIDs[6], int maxMistakes) {
     int amtMistakes = 0;
 
     for (short i = 0; i < maxMistakes; i++) {
-        mistakes.push_back(sf::CircleShape(width * 0.04f));
+        mistakes.push_back(sf::CircleShape(width * 0.035f));
         mistakes.at(i).setFillColor(sf::Color::Transparent);
         mistakes.at(i).setOutlineColor(sf::Color::White);
         mistakes.at(i).setOutlineThickness(1.f);
-        mistakes.at(i).setPosition({ width * 0.91f, height * 0.1f + width * 0.1f * i });
+        mistakes.at(i).setPosition({ width * 0.92f, height * 0.1f + width * 0.1f * i });
     }
 
     timer.restart();
