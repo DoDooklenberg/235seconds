@@ -12,8 +12,8 @@ class ShifrModule : public BaseModule
 {
 public:
     ShifrModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);
-    void process(sf::RenderWindow* window, int time);
-    void render(sf::RenderWindow* window);
+    void process(sf::RenderWindow* window, int time) override;
+    void render(sf::RenderWindow* window) override;
 private:
     void generateWords();
     bool justPressed = false;

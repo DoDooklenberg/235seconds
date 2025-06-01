@@ -12,8 +12,8 @@ class ClickerModule : public BaseModule
 {
 public:
     ClickerModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);
-    void process(sf::RenderWindow* window, int time); // Логика модуля
-    void render(sf::RenderWindow* window); // Отрисовка модуля
+    void process(sf::RenderWindow* window, int time) override; // Логика модуля
+    void render(sf::RenderWindow* window) override; // Отрисовка модуля
 private:
     void setCorrectClickAmount();
     unsigned int correctClickAmount;

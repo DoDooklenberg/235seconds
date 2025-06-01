@@ -21,8 +21,8 @@ private:
     sf::Sound LeverFlip;
 public:
     LeverModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont);
-    void process(sf::RenderWindow *window, int time);
-    void render(sf::RenderWindow *window);
+    void process(sf::RenderWindow *window, int time) override;
+    void render(sf::RenderWindow *window) override;
 };
 
 #endif // LEVERMODULE_H

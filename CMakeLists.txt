@@ -47,7 +47,8 @@ add_executable(main main.cpp
     particlesystem.h particlesystem.cpp
     levermodule.h levermodule.cpp
     shifrmodule.h shifrmodule.cpp
-    lightbulbsmodule.h lightbulbsmodule.cpp)
+    lightbulbsmodule.h lightbulbsmodule.cpp
+    diagram.qmodel)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)
 target_link_libraries(main PRIVATE SFML::Audio)
