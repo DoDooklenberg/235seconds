@@ -89,7 +89,7 @@ void DrawingModule::process(sf::RenderWindow *window, int time)
                             break;
                         }
                     }
-                    stringPull.setPitch((points.at(currentPoint - 1).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).length() * side * 0.001f);
+                    stringPull.setPitch(stringPull.getPitch() + ((points.at(currentPoint - 1).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).length() / (side * 2) - stringPull.getPitch()) * 0.1f);
                 } else {
                     for (int i = 0; i < amt; i++){
                         if ((points.at(i).getPosition() - sf::Vector2f(sf::Mouse::getPosition(*window))).length() <= side * 0.035f) {

@@ -2,7 +2,7 @@
 #include <math.h>
 #include <string>
 
-DrawingPoint::DrawingPoint(sf::Font newFont, sf::Vector2f pos, float r, int real, int fake): font{newFont}, position{pos}, radius{r}, realNumber{real}, fakeNumber{fake}, label{font, std::to_string(fake), sf::Color::White, (int)(r * 5), pos}
+DrawingPoint::DrawingPoint(sf::Font newFont, sf::Vector2f pos, float r, int real, int fake): font{newFont}, position{pos}, radius{r}, realNumber{real}, fakeNumber{fake}, label{font, std::to_string(fake), sf::Color::White, (int)(r * 5), pos + sf::Vector2f(r, r)}
 {
     point = sf::CircleShape(r);
     point.setPosition(position - sf::Vector2f{r, r});

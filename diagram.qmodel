@@ -61,7 +61,7 @@
                     </item>
                    </qlist>
                   </elements>
-                  <last-modified>1748774997059</last-modified>
+                  <last-modified>1748775896232</last-modified>
                   <toolbarid>Classes</toolbarid>
                  </MDiagram>
                 </base-MDiagram>
@@ -90,84 +90,84 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{fe285ef6-a427-4fbf-a31b-150a5342e89b}</uid>
+                    <uid>{e35f7e62-576c-46c7-bcc3-c51c78527a80}</uid>
                     <type>1</type>
                     <declaration>#sf::Vector2f origin</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{4d3af8a9-527c-495c-86ca-3cef20541971}</uid>
+                    <uid>{cf3f8511-297f-43a5-baea-d572e3659170}</uid>
                     <type>1</type>
                     <declaration>#float side</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{56f5cc1c-5443-423e-8be6-3286b6908fc7}</uid>
+                    <uid>{1890426c-95a7-4139-bf81-8b8bb283205b}</uid>
                     <type>1</type>
                     <declaration>#std::string serial</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{75b8f5d0-d111-4c22-9847-0d9684afcfda}</uid>
+                    <uid>{9f1877c8-b885-48bb-bf84-e4c73ef9a92b}</uid>
                     <type>1</type>
                     <declaration>#bool isDone</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{1a2fff7f-6f7d-4367-9b60-91ae31416e1d}</uid>
+                    <uid>{67ac8864-7323-43cf-97ec-ef23aeed3075}</uid>
                     <type>1</type>
                     <declaration>#int mistakes</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{9a5cd162-228f-4af8-a530-02a78926c561}</uid>
+                    <uid>{a5da806b-8a33-4a70-ae30-1295a5b28049}</uid>
                     <type>1</type>
                     <declaration>#sf::Font font</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{6f71b665-ae97-44ee-b515-257dcbffb686}</uid>
+                    <uid>{3b88a549-6a72-46ac-839d-66bc66ec5972}</uid>
                     <type>2</type>
                     <declaration>+bool isPosInModule(sf::Vector2f pos)</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{dd469a67-ee37-4f68-bf84-f8fdf3d86ac0}</uid>
+                    <uid>{174ead51-445d-4203-bb4e-36e46e7d37f7}</uid>
                     <type>2</type>
                     <declaration>+int getMistakes()</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{a628a734-bc45-495d-b6de-ce402ae7457e}</uid>
+                    <uid>{886c6a4a-d175-4ef4-8b9f-bac1d3af612a}</uid>
                     <type>2</type>
                     <declaration>+bool getIsDone()</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{81a51386-fc44-4477-afd5-e33c1f9e83b6}</uid>
+                    <uid>{de6b536b-bc5c-4d39-a67f-71f2d0f1d6af}</uid>
                     <type>2</type>
                     <declaration>+bool getIsBase()</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{75545d29-19cc-47a6-9be4-5a96c37a796e}</uid>
+                    <uid>{a6a1dfc3-8ef3-464a-8159-0c880708a5a1}</uid>
                     <type>2</type>
                     <declaration>+virtual void process(sf::RenderWindow* window, int time)</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{6ad9ab16-da9e-414e-828c-21e9d33c13be}</uid>
+                    <uid>{60dbcbc5-6d30-40c7-adf0-830021613409}</uid>
                     <type>2</type>
                     <declaration>+virtual void render(sf::RenderWindow* window)</declaration>
                    </MClassMember>
@@ -175,6 +175,58 @@
                  </qlist>
                 </members>
                </MClass>
+              </instance>
+             </target>
+            </handle>
+           </item>
+           <item>
+            <handle>
+             <uid>{415ffda9-dd0f-4425-9e3e-d66d489204b4}</uid>
+             <target>
+              <instance type="MPackage">
+               <MPackage>
+                <base-MObject>
+                 <MObject>
+                  <base-MElement>
+                   <MElement>
+                    <uid>{415ffda9-dd0f-4425-9e3e-d66d489204b4}</uid>
+                    <flags>1</flags>
+                   </MElement>
+                  </base-MElement>
+                  <name>235seconds</name>
+                  <children>
+                   <handles>
+                    <handles>
+                     <qlist>
+                      <item>
+                       <handle>
+                        <uid>{df647287-5cff-46d0-9f61-7820537bea7d}</uid>
+                        <target>
+                         <instance type="MClass">
+                          <MClass>
+                           <base-MObject>
+                            <MObject>
+                             <base-MElement>
+                              <MElement>
+                               <uid>{df647287-5cff-46d0-9f61-7820537bea7d}</uid>
+                               <flags>1</flags>
+                              </MElement>
+                             </base-MElement>
+                             <name>ClickerModule</name>
+                            </MObject>
+                           </base-MObject>
+                          </MClass>
+                         </instance>
+                        </target>
+                       </handle>
+                      </item>
+                     </qlist>
+                    </handles>
+                   </handles>
+                  </children>
+                 </MObject>
+                </base-MObject>
+               </MPackage>
               </instance>
              </target>
             </handle>
