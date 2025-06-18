@@ -49,6 +49,7 @@ add_executable(main main.cpp
     shifrmodule.h shifrmodule.cpp
     lightbulbsmodule.h lightbulbsmodule.cpp
     diagram.qmodel)
+set_target_properties(main PROPERTIES RUNTIME_OUTPUT_NAME "235seconds")
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)
 target_link_libraries(main PRIVATE SFML::Audio)
