@@ -2,8 +2,8 @@
 
 ClickerModule::ClickerModule(sf::Vector2f newOrigin, float newSide, std::string newSerial, sf::Font newFont) :
     BaseModule(newOrigin, newSide, newSerial, newFont),
-    mainButton{Label(font, "ЖМИ", sf::Color::Red), origin+sf::Vector2f(side*0.25f, side*0.4f), sf::Vector2f(side*0.5f,side*0.2f), sf::Color::White},
-    confirmButton{Label(font, "ПОДТВЕРДИТЬ", sf::Color::Red), origin+sf::Vector2f(side*0.3f, side*0.65f), sf::Vector2f(side*0.4f,side*0.1f), sf::Color::White},
+    mainButton{Label(font, u8"ЖМИ", sf::Color::Red), origin+sf::Vector2f(side*0.25f, side*0.4f), sf::Vector2f(side*0.5f,side*0.2f), sf::Color::White},
+    confirmButton{Label(font, u8"ПОДТВЕРДИТЬ", sf::Color::Red), origin+sf::Vector2f(side*0.3f, side*0.65f), sf::Vector2f(side*0.4f,side*0.1f), sf::Color::White},
     displayCount{font,"0", sf::Color::White, int(side*0.1f)},
     clickBuf{"click.wav"},
     click(clickBuf)
